@@ -304,7 +304,7 @@
         
           
             <p>在sql注入、文件上传和文件包含问题上，可以学到一些新思路。</p>
-<p>##sql注入<br>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
+<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
 <p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。</p>
 <p>sqlmap中内置了base64编码脚本：</p>
 <blockquote>
@@ -316,7 +316,7 @@
 <p>选择一个数据库猜表<br>sqlmap.py -u “–” -D demo –tables<br>选择一个表猜列<br>sqlmap.py -u “–” -D demo -T flag –columns<br>根据列猜数据<br>sqlmap.py -u “–” -D demo -T flag -C value –dump</p>
 </blockquote>
 <p>关键在于参数被base64编码。tamper目录中各种脚本还是很多的。</p>
-<p>##文件上传<br>查看题目，没有找到上传点。</p>
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>查看题目，没有找到上传点。</p>
 <p>扫了一下目录，发现/upload，看这目录名，一会儿上传的话应该是要传到这个目录下的。</p>
 <p>首先想到是不是可以用PUT+COPY，尝试后发现被禁了。</p>
 <blockquote>
@@ -327,7 +327,7 @@
 <p>再次上传jpg文件，成功上传到/upload目录下。接下来开始考虑上传phpshell。</p>
 <p>尝试00截断，失败。后来发现内容为空的时候直接上传php文件竟然成功了。</p>
 <p>访问，即可回显flag。</p>
-<p>##文件包含<br>首先尝试能否读上级目录，发现./被过滤为malicious parameter，而/../没有被过滤，所以检测的只是开头有没有.。</p>
+<h2 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h2><p>首先尝试能否读上级目录，发现./被过滤为malicious parameter，而/../没有被过滤，所以检测的只是开头有没有.。</p>
 <p>这种情况下，利用php伪协议filter，成功包含文件，读取flag。</p>
 <blockquote>
 <p>php://filter/resource=../flag</p>
