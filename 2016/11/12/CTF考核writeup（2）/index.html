@@ -84,31 +84,22 @@
 
 
 
-<meta name="description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="description" content="没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。
+0x01 Russian利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。
+0x02 United States首先，在输入框尝试输入各种内容，系统提示“unless you are">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CTF考核writeup（1）">
-<meta property="og:url" content="http://yoursite.com/2016/11/12/CTF考核writeup（1）/index.html">
+<meta property="og:title" content="CTF考核writeup（2）">
+<meta property="og:url" content="http://yoursite.com/2016/11/12/CTF考核writeup（2）/index.html">
 <meta property="og:site_name" content="记录这">
-<meta property="og:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
-<meta property="og:updated_time" content="2016-11-23T07:08:11.000Z">
+<meta property="og:description" content="没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。
+0x01 Russian利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。
+0x02 United States首先，在输入框尝试输入各种内容，系统提示“unless you are">
+<meta property="og:updated_time" content="2016-11-23T07:46:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CTF考核writeup（1）">
-<meta name="twitter:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="twitter:title" content="CTF考核writeup（2）">
+<meta name="twitter:description" content="没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。
+0x01 Russian利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。
+0x02 United States首先，在输入框尝试输入各种内容，系统提示“unless you are">
 
 
 
@@ -126,7 +117,7 @@ sqlmap -u “http://xxx/index.php?id=">
   };
 </script>
 
-  <title> CTF考核writeup（1） | 记录这 </title>
+  <title> CTF考核writeup（2） | 记录这 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +247,7 @@ sqlmap -u “http://xxx/index.php?id=">
             
             
               
-                CTF考核writeup（1）
+                CTF考核writeup（2）
               
             
           </h1>
@@ -315,38 +306,26 @@ sqlmap -u “http://xxx/index.php?id=">
       
 
       
-        <p>在sql注入、文件上传和文件包含问题上，可以学到一些新思路。</p>
-<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
-<p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。</p>
-<p>sqlmap中内置了base64编码脚本：</p>
+        <p>没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。</p>
+<h2 id="0x01-Russian"><a href="#0x01-Russian" class="headerlink" title="0x01 Russian"></a>0x01 Russian</h2><p>利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。</p>
+<h2 id="0x02-United-States"><a href="#0x02-United-States" class="headerlink" title="0x02 United States"></a>0x02 United States</h2><p>首先，在输入框尝试输入各种内容，系统提示“unless you are root”。于是输入root，弹窗提示“输入无效”。查看源码，发现前端对输入做了限制，而且仅限制了root。</p>
+<p>burp绕过前端验证，将参数username的值修改为root。</p>
+<p>成功跳转到了新的页面。新页面上提示“localhost（127.0.0.1）only”。</p>
+<p>首先考虑到题意可能是限制ip来源，尝试后发现并不是。所以又尝试了修改Refer、Host。最终发现在<code>Host</code>被修改时拿到flag。</p>
+<h2 id="0x03-Canada"><a href="#0x03-Canada" class="headerlink" title="0x03 Canada"></a>0x03 Canada</h2><p>打开题目，提示“The form below is protect by Django CSRF MIDDLEWARE”。先尝试点击getflag按钮，提示“Your CSRF token is not what I want. ”。</p>
+<p>没有其他线索，先抓包。可以看到提交的参数是csrfmiddlewaretoken，另外cookie里也有一项csrftoken。没有及时截图，实际上第一次抓包的时候这两个值都是一串很长的编码字符串，它们值相等。如果修改其中一个，会报错“CSRF verification failed.”。</p>
+<p>为了方便测试，看这两个值被修改的各种效果，我把这个请求放到了repeater模块。找到响应里居然有注释。前面两句代码大概意思是说，如果csrfmiddlewaretoken的值为bypass，那么则返回flag。另外还提到了一个Django的CVE。</p>
+<p>看到提示，首先当然会把csrfmiddlewaretoken的值改成bypass，但仅仅这样肯定是无法通过保护机制验证的。实际上到了这里，基本上都能想到把cookie也改了。不过还是先看看<code>cve-2016-7401</code>。</p>
+<p>这一漏洞造成的原因是，在某些版本的django中，cookie的解析代码是有问题的。如果这个网站同时采用了google analytics，此时攻击者就可以通过强制设置cookie来绕过csrf保护机制。</p>
+<p>这道题的场景里，既然已知‘bypass’，已知漏洞，那就可以通过这种简单方法绕过，从而得到flag。</p>
+<h2 id="0x04-China"><a href="#0x04-China" class="headerlink" title="0x04 China"></a>0x04 China</h2><p>随意上传一张图片。从提示看出，上传点对上传的文件类型应该是有一定要求的，而且很有可能要求的是txt、doc之类的。</p>
+<p>第一次上传doc文档时未成功，又尝试了其他一些不同类型的文件，仍未上传成功。此时，将exe文件的Content-Type修改为doc文件的application/msword类型时，上传成功了。于是发现，只要Content-Type的值为application/msword，不论什么文件都可以上传成功，对实际类型和后缀都是没有过滤的。而第一次上传doc之所以失败是因为文件太大。</p>
+<p>题目已提示考察XSS，首先想到上传文件名是否存在XSS。尝试<code>&lt;script&gt;</code>标签，根据结果可以看出‘/’及其之前的字符都被过滤了。</p>
+<p>故想到利用img标签。在filename属性中构造语句：</p>
 <blockquote>
-<p>sqlmap -u “<a href="http://xxx/index.php?id=1" target="_blank" rel="external">http://xxx/index.php?id=1</a>“ - -tamper base64encode.py - -current-db</p>
+<p>“<code>&gt;&lt;image src=1 onerror=alert(&#39;xss&#39;)&gt;</code>“</p>
 </blockquote>
-<p>发现确实是存在注入的。</p>
-<p>接下来用sqlmap，按套路猜解，即可在flag表中找到flag。</p>
-<blockquote>
-<p>选择一个数据库猜表<br>sqlmap.py -u “–” -D demo –tables<br>选择一个表猜列<br>sqlmap.py -u “–” -D demo -T flag –columns<br>根据列猜数据<br>sqlmap.py -u “–” -D demo -T flag -C value –dump</p>
-</blockquote>
-<p>关键在于参数被base64编码。tamper目录中各种脚本还是很多的。</p>
-<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>查看题目，没有找到上传点。</p>
-<p>扫了一下目录，发现/upload，看这目录名，一会儿上传的话应该是要传到这个目录下的。</p>
-<p>首先想到是不是可以用PUT+COPY，尝试后发现被禁了。</p>
-<blockquote>
-<p>OPTIONS / HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>比如PUT</p>
-<blockquote>
-<p>PUT /test.txt HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>既然没有上传点，于是自行构造一个form表单。将action指向upload.php。这里还得要猜对name的值为file。再尝试从本地表单上传jpg文件，提交成功，表明此处确实有上传功能。这时会发现一个问题，不知道文件被传到哪儿了。所以在表单中添加一个隐藏域，将“dir”指定为“/upload/”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;http://--/upload.php&quot; method=&quot;post&quot; enctype= &quot;multipart/form-data&quot;&gt;</div><div class="line">  &lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;&lt;/p&gt;</div><div class="line">  &lt;input type=&quot;hidden&quot; name=&quot;dir&quot; value=&quot;/upload/&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>再次上传jpg文件，成功上传到/upload目录下。接下来开始考虑上传phpshell。</p>
-<p>尝试00截断，失败。后来发现内容为空的时候直接上传php文件竟然成功了。</p>
-<p>访问，即可回显flag。</p>
-<h2 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h2><p>首先尝试能否读上级目录，发现./被过滤为malicious parameter，而/../没有被过滤，所以检测的只是开头有没有.。</p>
-<p>这种情况下，利用php伪协议filter，成功包含文件，读取flag。</p>
-<blockquote>
-<p>php://filter/resource=../flag</p>
-</blockquote>
+<p>由于‘&gt;’将之前的标签闭合，而src不存在，onerror弹窗，成功发起xss攻击。</p>
 
       
     </div>
@@ -379,13 +358,17 @@ sqlmap -u “http://xxx/index.php?id=">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/12/CTF考核writeup（2）/" rel="next" title="CTF考核writeup（2）">
-                <i class="fa fa-chevron-left"></i> CTF考核writeup（2）
+              <a href="/2016/08/07/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/12/CTF考核writeup（1）/" rel="prev" title="CTF考核writeup（1）">
+                CTF考核writeup（1） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -499,7 +482,7 @@ sqlmap -u “http://xxx/index.php?id=">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sql注入"><span class="nav-number">1.</span> <span class="nav-text">sql注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件上传"><span class="nav-number">2.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件包含"><span class="nav-number">3.</span> <span class="nav-text">文件包含</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-Russian"><span class="nav-number">1.</span> <span class="nav-text">0x01 Russian</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-United-States"><span class="nav-number">2.</span> <span class="nav-text">0x02 United States</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-Canada"><span class="nav-number">3.</span> <span class="nav-text">0x03 Canada</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-China"><span class="nav-number">4.</span> <span class="nav-text">0x04 China</span></a></li></ol></div>
             
           </div>
         </section>
