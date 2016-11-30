@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="web,ctf," />
+  <meta name="keywords" content="信息安全,可信计算," />
 
 
 
@@ -84,31 +84,22 @@
 
 
 
-<meta name="description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="description" content="可信计算在中国发展是否有用？学号：姓名：
+作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，但是对于可信计算目前在中国的“发展”，我是坚决反对的。
+目前可信计算正在被广泛的传播和科普，包括我自己在大学的时候，一个普通学生能听到两次院士的演讲还是相当激动的。但不知道其他人有没有同样的感受，可信计算附带的、某些非技术层面的理念实在让人不敢苟同。我甚至认为这些理念会让不了解信息安全">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CTF考核writeup（1）">
-<meta property="og:url" content="http://yoursite.com/2016/11/12/CTF考核writeup（1）/index.html">
+<meta property="og:title" content="为什么说反对可信计算“发展”">
+<meta property="og:url" content="http://yoursite.com/2016/11/30/为什么说反对可信计算“发展”/index.html">
 <meta property="og:site_name" content="记录这">
-<meta property="og:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
-<meta property="og:updated_time" content="2016-11-23T07:08:11.000Z">
+<meta property="og:description" content="可信计算在中国发展是否有用？学号：姓名：
+作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，但是对于可信计算目前在中国的“发展”，我是坚决反对的。
+目前可信计算正在被广泛的传播和科普，包括我自己在大学的时候，一个普通学生能听到两次院士的演讲还是相当激动的。但不知道其他人有没有同样的感受，可信计算附带的、某些非技术层面的理念实在让人不敢苟同。我甚至认为这些理念会让不了解信息安全">
+<meta property="og:updated_time" content="2016-11-30T14:05:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CTF考核writeup（1）">
-<meta name="twitter:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
-sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+<meta name="twitter:title" content="为什么说反对可信计算“发展”">
+<meta name="twitter:description" content="可信计算在中国发展是否有用？学号：姓名：
+作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，但是对于可信计算目前在中国的“发展”，我是坚决反对的。
+目前可信计算正在被广泛的传播和科普，包括我自己在大学的时候，一个普通学生能听到两次院士的演讲还是相当激动的。但不知道其他人有没有同样的感受，可信计算附带的、某些非技术层面的理念实在让人不敢苟同。我甚至认为这些理念会让不了解信息安全">
 
 
 
@@ -126,7 +117,7 @@ sqlmap -u “http://xxx/index.php?id=">
   };
 </script>
 
-  <title> CTF考核writeup（1） | 记录这 </title>
+  <title> 为什么说反对可信计算“发展” | 记录这 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +247,7 @@ sqlmap -u “http://xxx/index.php?id=">
             
             
               
-                CTF考核writeup（1）
+                为什么说反对可信计算“发展”
               
             
           </h1>
@@ -268,8 +259,8 @@ sqlmap -u “http://xxx/index.php?id=">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-12T22:43:56+08:00" content="2016-11-12">
-              2016-11-12
+            <time itemprop="dateCreated" datetime="2016-11-30T22:43:56+08:00" content="2016-11-30">
+              2016-11-30
             </time>
           </span>
 
@@ -282,8 +273,8 @@ sqlmap -u “http://xxx/index.php?id=">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/web安全/" itemprop="url" rel="index">
-                    <span itemprop="name">web安全</span>
+                  <a href="/categories/杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">杂谈</span>
                   </a>
                 </span>
 
@@ -315,38 +306,19 @@ sqlmap -u “http://xxx/index.php?id=">
       
 
       
-        <p>在sql注入、文件上传和文件包含问题上，可以学到一些新思路。</p>
-<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
-<p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。</p>
-<p>sqlmap中内置了base64编码脚本：</p>
-<blockquote>
-<p>sqlmap -u “<a href="http://xxx/index.php?id=1" target="_blank" rel="external">http://xxx/index.php?id=1</a>“ - -tamper base64encode.py - -current-db</p>
-</blockquote>
-<p>发现确实是存在注入的。</p>
-<p>接下来用sqlmap，按套路猜解，即可在flag表中找到flag。</p>
-<blockquote>
-<p>选择一个数据库猜表<br>sqlmap.py -u “–” -D demo –tables<br>选择一个表猜列<br>sqlmap.py -u “–” -D demo -T flag –columns<br>根据列猜数据<br>sqlmap.py -u “–” -D demo -T flag -C value –dump</p>
-</blockquote>
-<p>关键在于参数被base64编码。tamper目录中各种脚本还是很多的。</p>
-<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>查看题目，没有找到上传点。</p>
-<p>扫了一下目录，发现/upload，看这目录名，一会儿上传的话应该是要传到这个目录下的。</p>
-<p>首先想到是不是可以用PUT+COPY，尝试后发现被禁了。</p>
-<blockquote>
-<p>OPTIONS / HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>比如PUT</p>
-<blockquote>
-<p>PUT /test.txt HTTP/1.1<br>User-Agent: xxxx<br>Host: xxxx<br>Accept: <em>/</em></p>
-</blockquote>
-<p>既然没有上传点，于是自行构造一个form表单。将action指向upload.php。这里还得要猜对name的值为file。再尝试从本地表单上传jpg文件，提交成功，表明此处确实有上传功能。这时会发现一个问题，不知道文件被传到哪儿了。所以在表单中添加一个隐藏域，将“dir”指定为“/upload/”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;http://--/upload.php&quot; method=&quot;post&quot; enctype= &quot;multipart/form-data&quot;&gt;</div><div class="line">  &lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;&lt;/p&gt;</div><div class="line">  &lt;input type=&quot;hidden&quot; name=&quot;dir&quot; value=&quot;/upload/&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>再次上传jpg文件，成功上传到/upload目录下。接下来开始考虑上传phpshell。</p>
-<p>尝试00截断，失败。后来发现内容为空的时候直接上传php文件竟然成功了。</p>
-<p>访问，即可回显flag。</p>
-<h2 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h2><p>首先尝试能否读上级目录，发现./被过滤为malicious parameter，而/../没有被过滤，所以检测的只是开头有没有.。</p>
-<p>这种情况下，利用php伪协议filter，成功包含文件，读取flag。</p>
-<blockquote>
-<p>php://filter/resource=../flag</p>
-</blockquote>
+        <p>可信计算在中国发展是否有用？<br>学号：<br>姓名：</p>
+<p>作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，但是对于可信计算目前在中国的“发展”，我是坚决反对的。</p>
+<p>目前可信计算正在被广泛的传播和科普，包括我自己在大学的时候，一个普通学生能听到两次院士的演讲还是相当激动的。但不知道其他人有没有同样的感受，可信计算附带的、某些非技术层面的理念实在让人不敢苟同。<strong>我甚至认为这些理念会让不了解信息安全的人们形成错误的观念，导致非常负面的后果。</strong></p>
+<p>从可信计算最有力的推动者沈昌祥院士的报告里可以了解到，他认为可信计算达到的效果是“攻击者进不去，非授权者重要信息拿不到，窃取保密信息看不懂，系统和信息篡改不了，系统工作瘫不成，攻击行为赖不掉。我想听到这里，大部分人是不是会理解为，有可信计算，可高枕无忧。</p>
+<p>我第一次听沈院士讲座是在省里组织的一场全国比赛的颁奖典礼上，在场的除了我们少数参赛者，其他大部分人是各个不同政府部门派过来听讲座的，连烟草、交通之类的部门都有。<strong>那时候我是从没听说过可信计算的小白</strong>，听完我的感觉就是，虽然不太懂但是好厉害的样子。我不知道那些领导有没有认真听，如果听了，他们得出的结论或许会是信息安全问题没那么严重，这些东西听不懂，跟我们普通人无关，等他们研究出来了我们就安全了。当然网上也有人说，沈院士的观点不能代表其他可信计算研究者。他们所说的也许更谨慎科学，但是院士的影响力就是那么大。</p>
+<p>“有了可信计算，网络空间就彻底安全，所以安全是阳春白雪与我们无关的研究”。这真是非常危险的观念。<strong>现实中几千年都没有解决的偷盗问题，放到网络空间中，我们凭什么认为它就会消弭？</strong></p>
+<p>且说社会工程学攻击手段。现在APT的概念很火。即使可信计算架构完美实现了，员工非要打开某个邮件附件，非要把密码设置得很简单，或者他是间谍，能是可信计算防的住的吗？</p>
+<p>从攻击者的角度，<strong>很多时候攻击根本到不了那么深，在应用实现层面程序员犯过的错已经足够黑客研究了。</strong>如知乎云舒所说，比如说web，直接与用户交互，也是目前最受欢迎的攻击目标。端口扫描不能禁止，它是必要的服务；SQL注入，代码是数据库进程执行的；XSS、CSRF都是在浏览器的进程执行；点击劫持就更不用说了。再说其他应用程序，它总是为要做一些事情而存在的，而且程序员在开发过程中难免出错，只要有功能有输入输出，攻击者就有机可乘。安卓已经实现了所谓的trustzone，但是很多攻击手段并不是它所能覆盖的防护面。普通人认为最糟心的吸费蠕虫，反而在专业人员看来是技术含量最低的，随便一个android开发者都能做。</p>
+<p>从可信计算的角度，可信计算基于信任。从初始的信任根到最后的可信应用，每个环节都通过信任链的前一环节验证来确保真实可信，数据是通过信任根-BIOS-引导程序-系统内核-应用层程序这条信任链保证其安全性。如果我的理解没错的话，逆向工作、正版软件的破解工作大概不再有用武之地。</p>
+<p>是的，<strong>可信计算是很有必要，但是对于普通人普通企业又不是那么重要。所以，它不需要如此大范围的“发展”。</strong>机要部门首先需要高等级的防护，那么有研究人员首先给他们做就行了，现在的所谓“发展”是没有必要的。</p>
+<p>我想之所以出现cyber space一词，就是因为发现网络空间不是那么单一简单的事物，它和我们的生活没有两样。有了保险柜，不代表东西都会放进去，有了防盗门，不代表可以不关窗。</p>
+<p>毕竟安全是<strong>权衡</strong>利弊下的选择，且始终会以<strong>攻防</strong>的形式存在。</p>
+<p>乔布斯说未来每个人都应学习写代码。而作为安全相关的研究从业者，我们向非专业人员传播的观念应当是进入信息时代，每个人都应提高安全意识，了解计算机相关知识，维护网络空间的安全秩序，<strong>如果想要高级安全服务？那就花钱买。而不是告诉大家，安全我来做，你不用管。</strong></p>
 
       
     </div>
@@ -368,9 +340,9 @@ sqlmap -u “http://xxx/index.php?id=">
       
         <div class="post-tags">
           
-            <a href="/tags/web/" rel="tag">#web</a>
+            <a href="/tags/信息安全/" rel="tag">#信息安全</a>
           
-            <a href="/tags/ctf/" rel="tag">#ctf</a>
+            <a href="/tags/可信计算/" rel="tag">#可信计算</a>
           
         </div>
       
@@ -379,17 +351,13 @@ sqlmap -u “http://xxx/index.php?id=">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/07/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2016/11/30/分析所采集的流量样本  还原一次攻击的过程/" rel="next" title="利用wireshark分析攻击流量样本">
+                <i class="fa fa-chevron-left"></i> 利用wireshark分析攻击流量样本
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/12/CTF考核writeup（2）/" rel="prev" title="CTF考核writeup（2）">
-                CTF考核writeup（2） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -503,7 +471,7 @@ sqlmap -u “http://xxx/index.php?id=">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sql注入"><span class="nav-number">1.</span> <span class="nav-text">sql注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件上传"><span class="nav-number">2.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件包含"><span class="nav-number">3.</span> <span class="nav-text">文件包含</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>
