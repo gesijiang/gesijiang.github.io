@@ -94,12 +94,17 @@
 <meta property="og:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…这周先补完两篇，再开个顶会论文阅读和学习(生硬的意译？)系列吧，第一篇预计关于云安全，关于虚拟化。
 言归正传，浏览器安全是归类到web安全中的。
 想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未">
-<meta property="og:updated_time" content="2016-12-07T19:07:34.000Z">
+<meta property="og:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20161208162609713?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20161208163104871?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20161208170454328?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2016-12-08T15:52:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浏览器安全（1）-原理 时序 Render DOM树构建">
 <meta name="twitter:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…这周先补完两篇，再开个顶会论文阅读和学习(生硬的意译？)系列吧，第一篇预计关于云安全，关于虚拟化。
 言归正传，浏览器安全是归类到web安全中的。
 想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
 
@@ -312,9 +317,28 @@
 <p>其实我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”，还有owasp10。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
 <p><strong>浏览器安全属于Web安全中的客户端安全部分</strong>，当然，还有XSS、CSRF、点击劫持等都能算到客户端安全这一类中。而服务端安全包含了SQL注入、文件上传、配置安全、拒绝服务等问题。</p>
 <p>分类来自《白帽子讲Web安全》，看看书的目录就能明白，这里就不上图了。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">《How browsers work》</a>经典文章</p>
-<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>自绘edge可参考架构</p>
-<h2 id="处理时序"><a href="#处理时序" class="headerlink" title="处理时序"></a>处理时序</h2><p>加载JavaScript实例<br>拖拽实例</p>
+<p>关于浏览器原理的文章：<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">《How browsers work》</a>经典</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>浏览器大概分为以下几个部分，实际上，不同浏览器如chrome、firefox等的具体实现会有一些区别。</p>
+<p><img src="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>用户界面：与用户交互、接受用户操作。<br>浏览器引擎：提供接口（加载、刷新、后退等），操作渲染引擎。这样渲染引擎就与平台无关，可以移植了</p>
+<p><strong>渲染引擎</strong>：解析HTML和CSS，完成布局和显示。<strong>浏览器的核心</strong>，这个是要详细介绍的。</p>
+<p>网络：协议解析，网络I/O等<br>JavaScript解释器：解析JS代码。也有XML的解释器，不单独列出了。<br>用户界面后端：用于绘制基本小部件（如组合框、窗口）。它暴露不是平台特定的通用接口。其下使用操作系统用户界面方法。<br>数据存储模块：存cookie、缓存、书签等。</p>
+<hr>
+<p>Chrome从修改开源的Webkit，到自己的Blink渲染引擎；Firefox的Gecko；IE的trident。网上或多或少有些资料，可以看到这些内核在实现上、结构上都有一些细微的区别。</p>
+<p>去年微软新出了Edge，渲染引擎是EdgeHTML，JS引擎是Chakra，都是新的。其中<a href="https://github.com/Microsoft/ChakraCore" target="_blank" rel="external">Chakra</a>已经开源。</p>
+<p>比如chrome，从总体结构到各个模块的详细分析，深入研究的资料已经挺多了。所以本文主要对edge进行探索。</p>
+<hr>
+<p>####Edge分析<br>因为我不是windows系统，所以首先下载了一个win10的<a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/" target="_blank" rel="external">镜像</a>，这个镜像是专用来试用Edge的，没有IE之类多余的东西。</p>
+<p>一般windows把.dll放在system32。我们已经知道新渲染引擎名为edgehtml，js引擎名为chakra。找一下，发现这些文件确实在这个文件夹中。</p>
+<p><img src="http://img.blog.csdn.net/20161208162609713?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>现在需要知道的是，还有哪些动态链接库呢？<br>查找前人资料，可以知道IE的模块如下图：</p>
+<p><img src="http://img.blog.csdn.net/20161208163104871?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<hr>
+<p>先看看有哪些应用程序调用了edgehtml.dll：</p>
+<p><img src="http://img.blog.csdn.net/20161208170454328?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>自绘一个edge总体架构图，供参考：</p>
+<h2 id="处理时序"><a href="#处理时序" class="headerlink" title="处理时序"></a>处理时序</h2><p>（1）对用户界面进行操作，如拖拽</p>
+<p>（2）加载带有JavaScript脚本的HTML文档</p>
 <h2 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h2><p>DOM树和Render树构建实例</p>
 
       
@@ -468,7 +492,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理时序"><span class="nav-number">3.</span> <span class="nav-text">处理时序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渲染引擎"><span class="nav-number">4.</span> <span class="nav-text">渲染引擎</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理时序"><span class="nav-number">2.</span> <span class="nav-text">处理时序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渲染引擎"><span class="nav-number">3.</span> <span class="nav-text">渲染引擎</span></a></li></ol></div>
             
           </div>
         </section>
