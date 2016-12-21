@@ -240,6 +240,161 @@
             
               
                 
+                <a class="post-title-link" href="/2016/12/19/8-云安全（1）-概况 以及同驻攻击、侧信道相关/" itemprop="url">
+                  云安全（1）-概况 以及同驻攻击、侧信道介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-19T02:43:56+08:00" content="2016-12-19">
+              2016-12-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/论文总结-翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">论文总结/翻译</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="云安全分类"><a href="#云安全分类" class="headerlink" title="云安全分类"></a>云安全分类</h2><p>从层次上看，云安全可以分为以下几类：<br><strong>物理安全</strong><br><strong>虚拟化安全</strong><br><strong>数据安全</strong><br><strong>应用安全</strong></p>
+<p>针对虚拟化架构的攻击手段有比如虚拟机逃逸、VM Hopping等。<br>本文主要调研虚拟化安全中的同驻攻击，也涉及到侧信道。所有内容大部分来自最后提到的三篇参考文献。</p>
+<h2 id="概念-如何攻击"><a href="#概念-如何攻击" class="headerlink" title="概念/如何攻击"></a>概念/如何攻击</h2><p>物理资源的共享导致云中存在不可避免的安全问题。</p>
+<p>一种普遍的思路是这样的：如果攻击者能够让自己的VM被分配到和受害者相同的物理服务器，也就是使两个虚拟机同驻，那么攻击者就可能绕过虚拟机之间的隔离措施，窃取受害者机密信息。</p>
+<p>在这个思路中，整个过程包括两个步骤：同驻攻击和跨VM攻击。只有成功实施了同驻攻击，才能利用侧信道、或从虚拟机“逃逸”到hypervisor，进行接下来的跨VM攻击。</p>
+<p>也就是说，一方面，同驻攻击本身是利用侧信道技术确认已经与受害者同驻的；另一方面，在实现同驻后，攻击者可以利用侧信道进行跨VM攻击，从而窃取机密信息。</p>
+<p>本文主要侧重介绍同驻的原理和实现方法。至于侧信道，会放在在同驻检测部分介绍。</p>
+<p>同驻攻击也分为两步：放置和检测。前者指攻击者将恶意VM放置在云中与目标客户相同的物理机器上，这里一般会利用云中虚拟机放置策略的漏洞；后者指攻击者需要判断两个虚拟机是否已经成功同驻，比如利用侧信道技术，可以实现同驻检测。</p>
+<h2 id="关于我看的文章"><a href="#关于我看的文章" class="headerlink" title="关于我看的文章"></a>关于我看的文章</h2><p>最先提出在云中同驻情况下利用侧信道的文章是2009年发表在会议ccs上的Hey, You, Get Off of My Cloud: Exploring Information Leakage in Third-Party Compute Clouds[1]。根据这篇文章的被引情况，可以发现在这之后，研究人员不仅找到了更多在同驻情况下可能造成威胁的侧信道，还提出了一些针对某类侧信道的防御方法。</p>
+<p>然而云技术发展很快，自从亚马逊推出并引入了VPC（virtual private cloud）[4]，早期提出的攻击方法和防御方法就显得有些过时，不那么适用了。</p>
+<p>于是，在2015年的usenix会议上，出现了两篇与同驻攻击相关的文章，都是在当前新的VPC环境的背景下开展研究工作的。</p>
+<p>其中一篇题为A Placement Vulnerability Study in Multi-Tenant Public Clouds[2]，它基于[1]的工作重新讨论和评估了在目前云环境下的同驻问题。该作者还认为，之前好些研究工作的关注点放在侧信道本身的发现和防御，但随着越来越多新的侧信道被发现，既然不可能完全通晓系统究竟有多少侧信道，那么解决虚拟机同驻攻击才是更本质的研究点。</p>
+<h2 id="新形势-VPC-下的同驻-调研背景"><a href="#新形势-VPC-下的同驻-调研背景" class="headerlink" title="新形势(VPC)下的同驻/调研背景"></a>新形势(VPC)下的同驻/调研背景</h2><p>在[1]最早提出利用侧信道攻击在虚拟机实现同驻后窃取同驻VM机密信息的方法后，很多人开始对云环境中虚拟机同驻情况下的侧信道攻击进行研究，也发现了更多可以被利用的侧信道以及缓解侧信道攻击的方法。</p>
+<p>然而亚马逊云随后就引入了虚拟私有云VPC，即virtual private cloud。VPC将EC2的大型网络资源池中各个实例隔离,允许用户在自己定义的虚拟网络中启动云计算资源，向租户提供了隔离的网络环境。<br>事实证明，VPC确实是目前防御同驻威胁最有效果的方法了，没有同驻，自然也不存在侧信道被利用的问题。传统的同驻攻击常通过扫描内部IP地址确定攻击目标的，引入VPC后，传统方法就完全失效了,因为VPC是可以隐藏实例的内部IP地址的。也就是说，在VPC之前，攻击者可以通过扫描轻易得到实例的内部IP地址；而现在处于VPC中的实例的则只会暴露公有IP。</p>
+<p>那么有了VPC彻底解决了同驻问题了吗？并不是。VPC仅仅在逻辑上隔离网络，所以来自不同VPC的实例仍然可以共享相同的物理机器,有实现同驻的机会。</p>
+<p>但不管怎么说，VPC机制的确大幅提高了攻击成本。根据数据可得知，在2008年实现同驻是极其容易的，如果有两个帐户,各启动20个实例,就能观察到7到8对虚拟机同驻[1]；在2012年,160个实例启动能观察到一对同驻。这是因为云服务提供商为了抑制同驻威胁，一方面一直在改进其VM放置算法；另一方面也在网络管理方面做出了调整，例如引入VPC、改进路由配置等。所以，实现同驻已经变得越来越困难了。</p>
+<p>那么，[1]中思想虽然经典，但在它的具体手法在当前云环境下是否有效呢？[2]就是在这样的情况下，验证虽然[1]中提出的部分方法已经失效了，但通过实验证实，在主流公有云EC2，GCE和Azure中，实现同驻的成本还是很低。另外，同期的文章[3]也描述了一种适应当前环境的新的同驻方案，然后评估了VPC的影响，并提出了一种量化评估同驻攻击的解决方案。</p>
+<h2 id="放置策略"><a href="#放置策略" class="headerlink" title="放置策略"></a>放置策略</h2><h3 id="实现在同一台机器上放置的原理"><a href="#实现在同一台机器上放置的原理" class="headerlink" title="实现在同一台机器上放置的原理"></a>实现在同一台机器上放置的原理</h3><p>公有云（如Amazon EC2，Google Compute Engine和Microsoft Azure）中，通常，用户注册帐户购买服务后可以在管理控制台指定VM配置，其中配置参数包括实例类型，磁盘映像，托管VM的数据中心或区域等，配置完成后即可启动该VM实例。在这期间，云提供商的VM启动服务会从客户端接收描述VM的配置期望的一组参数，然后为新的VM分配资源。</p>
+<p>那么在配置过程中就存在一个问题：选择哪一台物理主机运行该VM？这就是云中的虚拟机放置（placement）策略。</p>
+<p>虽然云提供商不公布放置策略算法，但用户可以控制配置参数，从而影响VM放置。 图1中给出了一些值得注意的参数列表。</p>
+<p>图1</p>
+<p>通过控制这些变量，攻击者就可以一定程度上影响VM在物理机器上的放置，从而实现与受害者同驻了。比如说数据中心的选取，一些小的数据中心机器因为少，机器发生同驻的概率更大一些。</p>
+<h3 id="相关的实验和评估"><a href="#相关的实验和评估" class="headerlink" title="相关的实验和评估"></a>相关的实验和评估</h3><p>为了详细探究VM放置策略的脆弱点，[2]设置了一个实验，通过评估三个公共云，Amazon EC2、Google Compute Engine和Microsoft Azure，对目前的放置策略的脆弱性进行了研究。简单的说，这个实验为图1展示的变量设置了一些值，并通过枚举这些配置，检查同驻情况。</p>
+<p>另外，他们自行定义了一种放置策略作为参考。该实验最后得出的结论是，实验显示在Amazon EC2、Google Compute Engine和Microsoft Azure中，实现同驻的成功率是参考策略的成功率的10倍，而且便宜了至少114美元。所以说，同驻的危害比我们想象中的要大得多。</p>
+<h2 id="同驻检测"><a href="#同驻检测" class="headerlink" title="同驻检测"></a>同驻检测</h2><p>要研究同驻攻击，乃至进行放置策略的脆弱性分析，同驻检测技术——识别两个虚拟机是否驻留在第三方公共云中的同一台物理机上是重要先决条件。</p>
+<p>[1]虽然提出一些检测技术，但已不适用当前云环境。在网络层面，VPC增强了云租户之间的隔离，阻碍了已知的共存检测技术，首先，云租户拥有了私密的内部IP地址，cloud cartography方法不再可行，其次，VPC要求租户之间利用公共ip通信，使用的公共IP地址路由到数据中心，而不再是hypervisor中的short-circuitingnetwork timing test。在系统层面，由于现在云技术会运用多个CPU package(?)，所以，基于缓存，比如LLC的隐蔽通道[5]也不是那么可靠了，同一机器上的两个VM不一定还会共享LLC了。</p>
+<p>也就是说，在[2]和[3]发表前，没有任何一种技术能可靠的用于在云中检测同驻。</p>
+<p>总的来说，大部分同驻检测方法一直以来都是通过侧信道实现的，所以，首先对侧信道技术进行简单的介绍。</p>
+<h3 id="侧信道技术介绍-分类"><a href="#侧信道技术介绍-分类" class="headerlink" title="侧信道技术介绍/分类"></a>侧信道技术介绍/分类</h3><p>云提供商不会告诉我们虚拟机是否同驻，所以通常要采用基于侧信道技术的检测方法。侧信道可以分为三类：逻辑侧信道、性能侧信道，以及隐蔽通道。</p>
+<p><strong>逻辑侧信道（Logical side-channel）</strong><br>通过程序中可见的逻辑资源（例如IP地址，时间戳计数器值）的泄漏信息。比如在Amazon EC2中，每个VM都分配有两个IP地址，一个公共IP地址和一个内部IP地址。 EC2云计算架构允许将公共IP地址转换为内部IP，这样攻击者就可以通过映射得到内部拓扑，乃至整个公有云的架构。一般来说，同驻的虚拟机趋于具有相近的内部IP地址。</p>
+<p><strong>性能侧信道（Performance side-channel）</strong><br>如果资源竞争会导致性能变化，这样的变化就可以用作同驻的指示符。比如，利用网络性能检测同驻[6]。</p>
+<p><strong>隐蔽信道（Convert channel）</strong><br>作为侧信道的中一种特别的情况，隐蔽信道只能在两个VM都能被控制的情况下建立，称这样的VM为合作VM。隐蔽通道是基于共享硬件资源造成的，比如基于LLC（last level cache）的检测技术[5]。这类检测技术只能用于实验，实际攻击中无法应用。</p>
+<h3 id="一种检测方法的具体实现"><a href="#一种检测方法的具体实现" class="headerlink" title="一种检测方法的具体实现"></a>一种检测方法的具体实现</h3><p>本节检测方法由[2]提出。<br>本节分为两部分，首先介绍了适用于合作VM的、基于隐蔽通道的检测方法；然后介绍了一种更普遍的、不需要两个VM合作的检测方法。</p>
+<p><strong>仅适用于合作VM的方法</strong><br>既然是合作VM，那么选择利用共享硬件资源的隐蔽通道。隐蔽信道由发送者和接收者组成。总的来说，就是发送方竞争某一共享资源，接收机通过周期性地测量感知到竞争，从而建立通道。</p>
+<p>[2]所提出的方法是基于x86处理器支持原子级内存操作，并且使用高速缓存来协调。方法大概流程是这样的：当发送方的一个锁定操作越过高速缓存行边界时，处理器会临时锁定内存总线。这时候，总线进行的其它操作（比如从DRAM取数据）就会变慢了，接收方就能感知到这样的变化。于是发送方和接收方之间建立了一个隐蔽通道。</p>
+<p>原文中有具体实现和核心代码段。与基于缓存的隐蔽通道不同，无论虚拟机是否共享CPU核心或软件包，这一方法都可以工作。</p>
+<p>其实我之前一直不太明白为什么明明已经可以控制这两台虚拟机了，还要检测同驻？作者给出的解释是：这种机制主要用来观察和研究公有云的放置策略。</p>
+<p><strong>可适用于非合作VM的方法</strong><br>对于现实中的攻击者来说，受害者VM肯定不是合作的。所以作者将上面提出的方法改进了一下。</p>
+<p>作者假定了一个现实攻击场景，攻击者只能使用受害者允许传入请求的接口，例如HTTP、FTP等。而且受害者的用户服务背后可能基于负载均衡器运行着多个实例。在这种情况下，攻击者如何检测与一个或多个受害VM的同驻？</p>
+<p>过程如下：攻击者向受害者发送大量请求，这些请求必须可以使得受害VM触及内存总线，所以，如果攻击者与受害者同驻，那么攻击者上的接收器就可以感知到性能变化。这就与受害VM之间建立了一个上一节所说的性能侧信道。</p>
+<p>另外，对于攻击者，可以使用现成的HTTP性能测量实用程序HTTPerf 作为接收器。整个过程非常方便。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是一篇概述和入门</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] T. Ristenpart, E. Tromer, H. Shacham, and S. Savage. Hey, you, get off of my cloud: Exploring information leakage in third-party com- pute clouds. In Proceedings of the 16th ACM conference on Com- puter and communications security, pages 199–212. ACM, 2009.<br>[2] Varadarajan, V., Zhang, Y., Ristenpart, T.and Swift, M. A placement vulnerability study in multi-tenant public clouds. In 24th USENIX Security Symposium (USENIX Security 15) (2015),pp. 913–928.<br>[3] Z. Xu, H. Wang, and Z. Wu. A measurement study on co-residence threat inside the cloud. In USENIX Security Symposium, 2015.<br>[4] Amazon Virtual Private Cloud (VPC) <a href="https://aws.amazon.com/cn/vpc/" target="_blank" rel="external">https://aws.amazon.com/cn/vpc/</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/12/08/7non-浏览器安全（1）-原理 时序 render dom树构建/" itemprop="url">
                   浏览器安全（1）-原理 时序 Render DOM树构建
                 </a>
@@ -896,138 +1051,6 @@
             
               
                 
-                <a class="post-title-link" href="/2016/11/12/2-CTF考核writeup（2）/" itemprop="url">
-                  CTF writeup（2）-绕过、上传、xss、csrf方面的内容
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-12T22:43:56+08:00" content="2016-11-12">
-              2016-11-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/web安全/" itemprop="url" rel="index">
-                    <span itemprop="name">web安全</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。</p>
-<h2 id="0x01-Russian"><a href="#0x01-Russian" class="headerlink" title="0x01 Russian"></a>0x01 Russian</h2><p>利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。</p>
-<h2 id="0x02-United-States"><a href="#0x02-United-States" class="headerlink" title="0x02 United States"></a>0x02 United States</h2><p>首先，在输入框尝试输入各种内容，系统提示“unless you are root”。于是输入root，弹窗提示“输入无效”。查看源码，发现前端对输入做了限制，而且仅限制了root。</p>
-<p>burp绕过前端验证，将参数username的值修改为root。</p>
-<p>成功跳转到了新的页面。新页面上提示“localhost（127.0.0.1）only”。</p>
-<p>首先考虑到题意可能是限制ip来源，尝试后发现并不是。所以又尝试了修改Refer、Host。最终发现在<code>Host</code>被修改时拿到flag。</p>
-<h2 id="0x03-Canada"><a href="#0x03-Canada" class="headerlink" title="0x03 Canada"></a>0x03 Canada</h2><p>打开题目，提示“The form below is protect by Django CSRF MIDDLEWARE”。先尝试点击getflag按钮，提示“Your CSRF token is not what I want. ”。</p>
-<p>没有其他线索，先抓包。可以看到提交的参数是csrfmiddlewaretoken，另外cookie里也有一项csrftoken。没有及时截图，实际上第一次抓包的时候这两个值都是一串很长的编码字符串，它们值相等。如果修改其中一个，会报错“CSRF verification failed.”。</p>
-<p>为了方便测试，看这两个值被修改的各种效果，我把这个请求放到了repeater模块。找到响应里居然有注释。前面两句代码大概意思是说，如果csrfmiddlewaretoken的值为bypass，那么则返回flag。另外还提到了一个Django的CVE。</p>
-<p>看到提示，首先当然会把csrfmiddlewaretoken的值改成bypass，但仅仅这样肯定是无法通过保护机制验证的。实际上到了这里，基本上都能想到把cookie也改了。不过还是先看看<code>cve-2016-7401</code>。</p>
-<p>这一漏洞造成的原因是，在某些版本的django中，cookie的解析代码是有问题的。如果这个网站同时采用了google analytics，此时攻击者就可以通过强制设置cookie来绕过csrf保护机制。</p>
-<p>这道题的场景里，既然已知‘bypass’，已知漏洞，那就可以通过这种简单方法绕过，从而得到flag。</p>
-<h2 id="0x04-China"><a href="#0x04-China" class="headerlink" title="0x04 China"></a>0x04 China</h2><p>随意上传一张图片。从提示看出，上传点对上传的文件类型应该是有一定要求的，而且很有可能要求的是txt、doc之类的。</p>
-<p>第一次上传doc文档时未成功，又尝试了其他一些不同类型的文件，仍未上传成功。此时，将exe文件的Content-Type修改为doc文件的application/msword类型时，上传成功了。于是发现，只要Content-Type的值为application/msword，不论什么文件都可以上传成功，对实际类型和后缀都是没有过滤的。而第一次上传doc之所以失败是因为文件太大。</p>
-<p>题目已提示考察XSS，首先想到上传文件名是否存在XSS。尝试<code>&lt;script&gt;</code>标签，根据结果可以看出‘/’及其之前的字符都被过滤了。</p>
-<p>故想到利用img标签。在filename属性中构造语句：</p>
-<blockquote>
-<p>“<code>&gt;&lt;image src=1 onerror=alert(&#39;xss&#39;)&gt;</code>“</p>
-</blockquote>
-<p>由于‘&gt;’将之前的标签闭合，而src不存在，onerror弹窗，成功发起xss攻击。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/2016/11/12/1-CTF考核writeup（1）/" itemprop="url">
                   CTF writeup（1）-sql注入、文件上传和文件包含问题新思路
                 </a>
@@ -1123,6 +1146,138 @@
 <blockquote>
 <p>php://filter/resource=../flag</p>
 </blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/12/2-CTF考核writeup（2）/" itemprop="url">
+                  CTF writeup（2）-绕过、上传、xss、csrf方面的内容
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-12T22:43:56+08:00" content="2016-11-12">
+              2016-11-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">web安全</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>没有什么，保存下来。主要包括绕过、上传、xss、csrf方面的内容。</p>
+<h2 id="0x01-Russian"><a href="#0x01-Russian" class="headerlink" title="0x01 Russian"></a>0x01 Russian</h2><p>利用burpsuite抓包，其他内容都很正常，发现cookie中info项比较可疑，大写小写数字都有，猜测其为base64编码过的字符串。通过Base64在线工具解码字符串，即得到了第一题flag。</p>
+<h2 id="0x02-United-States"><a href="#0x02-United-States" class="headerlink" title="0x02 United States"></a>0x02 United States</h2><p>首先，在输入框尝试输入各种内容，系统提示“unless you are root”。于是输入root，弹窗提示“输入无效”。查看源码，发现前端对输入做了限制，而且仅限制了root。</p>
+<p>burp绕过前端验证，将参数username的值修改为root。</p>
+<p>成功跳转到了新的页面。新页面上提示“localhost（127.0.0.1）only”。</p>
+<p>首先考虑到题意可能是限制ip来源，尝试后发现并不是。所以又尝试了修改Refer、Host。最终发现在<code>Host</code>被修改时拿到flag。</p>
+<h2 id="0x03-Canada"><a href="#0x03-Canada" class="headerlink" title="0x03 Canada"></a>0x03 Canada</h2><p>打开题目，提示“The form below is protect by Django CSRF MIDDLEWARE”。先尝试点击getflag按钮，提示“Your CSRF token is not what I want. ”。</p>
+<p>没有其他线索，先抓包。可以看到提交的参数是csrfmiddlewaretoken，另外cookie里也有一项csrftoken。没有及时截图，实际上第一次抓包的时候这两个值都是一串很长的编码字符串，它们值相等。如果修改其中一个，会报错“CSRF verification failed.”。</p>
+<p>为了方便测试，看这两个值被修改的各种效果，我把这个请求放到了repeater模块。找到响应里居然有注释。前面两句代码大概意思是说，如果csrfmiddlewaretoken的值为bypass，那么则返回flag。另外还提到了一个Django的CVE。</p>
+<p>看到提示，首先当然会把csrfmiddlewaretoken的值改成bypass，但仅仅这样肯定是无法通过保护机制验证的。实际上到了这里，基本上都能想到把cookie也改了。不过还是先看看<code>cve-2016-7401</code>。</p>
+<p>这一漏洞造成的原因是，在某些版本的django中，cookie的解析代码是有问题的。如果这个网站同时采用了google analytics，此时攻击者就可以通过强制设置cookie来绕过csrf保护机制。</p>
+<p>这道题的场景里，既然已知‘bypass’，已知漏洞，那就可以通过这种简单方法绕过，从而得到flag。</p>
+<h2 id="0x04-China"><a href="#0x04-China" class="headerlink" title="0x04 China"></a>0x04 China</h2><p>随意上传一张图片。从提示看出，上传点对上传的文件类型应该是有一定要求的，而且很有可能要求的是txt、doc之类的。</p>
+<p>第一次上传doc文档时未成功，又尝试了其他一些不同类型的文件，仍未上传成功。此时，将exe文件的Content-Type修改为doc文件的application/msword类型时，上传成功了。于是发现，只要Content-Type的值为application/msword，不论什么文件都可以上传成功，对实际类型和后缀都是没有过滤的。而第一次上传doc之所以失败是因为文件太大。</p>
+<p>题目已提示考察XSS，首先想到上传文件名是否存在XSS。尝试<code>&lt;script&gt;</code>标签，根据结果可以看出‘/’及其之前的字符都被过滤了。</p>
+<p>故想到利用img标签。在filename属性中构造语句：</p>
+<blockquote>
+<p>“<code>&gt;&lt;image src=1 onerror=alert(&#39;xss&#39;)&gt;</code>“</p>
+</blockquote>
+<p>由于‘&gt;’将之前的标签闭合，而src不存在，onerror弹窗，成功发起xss攻击。</p>
 
           
         
@@ -1294,7 +1449,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1302,7 +1457,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1311,7 +1466,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
