@@ -86,16 +86,16 @@
 
 <meta name="description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…这周先补完，再开个论文总结和翻译系列吧。
 言归正传，浏览器安全是归类到web安全中的。
-想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
-其实我以前对Web安全的了解也停留在通过注入啊、上">
+想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
+我以前对Web安全的了解也停留在通过注入啊、上传啊这些">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浏览器安全（1）-原理 时序 Render DOM树构建">
-<meta property="og:url" content="http://yoursite.com/2016/12/08/7non-浏览器安全（1）-原理 时序 render dom树构建/index.html">
+<meta property="og:title" content="浏览器安全 -原理 时序 Render DOM树构建">
+<meta property="og:url" content="http://yoursite.com/2016/12/08/7-浏览器安全（1）-原理 时序 render dom树构建/index.html">
 <meta property="og:site_name" content="路途">
 <meta property="og:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…这周先补完，再开个论文总结和翻译系列吧。
 言归正传，浏览器安全是归类到web安全中的。
-想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
-其实我以前对Web安全的了解也停留在通过注入啊、上">
+想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
+我以前对Web安全的了解也停留在通过注入啊、上传啊这些">
 <meta property="og:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161208163104871?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221151428604?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -106,13 +106,13 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20161209005324049?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221150841904?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221150914201?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2016-12-21T07:20:13.000Z">
+<meta property="og:updated_time" content="2016-12-22T14:30:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="浏览器安全（1）-原理 时序 Render DOM树构建">
+<meta name="twitter:title" content="浏览器安全 -原理 时序 Render DOM树构建">
 <meta name="twitter:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…这周先补完，再开个论文总结和翻译系列吧。
 言归正传，浏览器安全是归类到web安全中的。
-想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
-其实我以前对Web安全的了解也停留在通过注入啊、上">
+想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~
+我以前对Web安全的了解也停留在通过注入啊、上传啊这些">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -131,7 +131,7 @@
   };
 </script>
 
-  <title> 浏览器安全（1）-原理 时序 Render DOM树构建 | 路途 </title>
+  <title> 浏览器安全 -原理 时序 Render DOM树构建 | 路途 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -261,7 +261,7 @@
             
             
               
-                浏览器安全（1）-原理 时序 Render DOM树构建
+                浏览器安全 -原理 时序 Render DOM树构建
               
             
           </h1>
@@ -322,8 +322,8 @@
       
         <p>上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…<br>这周先补完，再开个论文总结和翻译系列吧。</p>
 <p>言归正传，<strong>浏览器安全是归类到web安全中的。</strong></p>
-<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~</p>
-<p>其实我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”，还有owasp10。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
+<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~</p>
+<p>我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”，还有owasp10。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
 <p><strong>浏览器安全属于Web安全中的客户端安全部分</strong>，当然，还有XSS、CSRF、点击劫持等都能算到客户端安全这一类中。而服务端安全包含了SQL注入、文件上传、配置安全、拒绝服务等问题。</p>
 <p>分类来自《白帽子讲Web安全》，看看书的目录就能明白，这里就不上图了。</p>
 <p>关于浏览器原理的文章：<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">《How browsers work》</a>经典</p>
@@ -398,8 +398,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/12/19/8-云安全（1）-概况 以及同驻攻击、侧信道相关/" rel="prev" title="云安全（1）-概况 以及同驻攻击、侧信道介绍">
-                云安全（1）-概况 以及同驻攻击、侧信道介绍 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/12/19/9-暂定结构 命令行  exits/" rel="prev" title="我也想写厉害的工具 -大体结构 shell exits">
+                我也想写厉害的工具 -大体结构 shell exits <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -468,7 +468,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -476,7 +476,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -485,7 +485,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

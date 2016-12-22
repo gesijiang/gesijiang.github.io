@@ -241,7 +241,7 @@
               
                 
                 <a class="post-title-link" href="/2016/12/19/8-云安全（1）-概况 以及同驻攻击、侧信道相关/" itemprop="url">
-                  云安全（1）-概况 以及同驻攻击、侧信道介绍
+                  云安全 -概况 以及同驻攻击、侧信道介绍
                 </a>
               
             
@@ -395,8 +395,121 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/08/7non-浏览器安全（1）-原理 时序 render dom树构建/" itemprop="url">
-                  浏览器安全（1）-原理 时序 Render DOM树构建
+                <a class="post-title-link" href="/2016/12/19/9-暂定结构 命令行  exits/" itemprop="url">
+                  我也想写厉害的工具 -大体结构 shell exits
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-19T02:43:56+08:00" content="2016-12-19">
+              2016-12-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/我也想写厉害的工具/" itemprop="url" rel="index">
+                    <span itemprop="name">我也想写厉害的工具</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这篇讲的是用python实现一个简单的shell。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/08/7-浏览器安全（1）-原理 时序 render dom树构建/" itemprop="url">
+                  浏览器安全 -原理 时序 Render DOM树构建
                 </a>
               
             
@@ -460,8 +573,8 @@
           
             <p>上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑，浏览器安全…<br>这周先补完，再开个论文总结和翻译系列吧。</p>
 <p>言归正传，<strong>浏览器安全是归类到web安全中的。</strong></p>
-<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的中二少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~</p>
-<p>其实我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”，还有owasp10。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
+<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕，我们都老了，年轻人才是祖国的未来啊~</p>
+<p>我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”，还有owasp10。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
 <p><strong>浏览器安全属于Web安全中的客户端安全部分</strong>，当然，还有XSS、CSRF、点击劫持等都能算到客户端安全这一类中。而服务端安全包含了SQL注入、文件上传、配置安全、拒绝服务等问题。</p>
 <p>分类来自《白帽子讲Web安全》，看看书的目录就能明白，这里就不上图了。</p>
 <p>关于浏览器原理的文章：<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">《How browsers work》</a>经典</p>
@@ -1459,7 +1572,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1467,7 +1580,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1476,7 +1589,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
