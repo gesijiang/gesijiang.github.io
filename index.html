@@ -435,7 +435,7 @@
 <p>那么，[1]中思想虽然经典，但在它的具体手法在当前云环境下是否有效呢？[2]就是在这样的情况下，验证虽然[1]中提出的部分方法已经失效了，但通过实验证实，在主流公有云EC2，GCE和Azure中，实现同驻的成本还是很低。另外，同期的文章[3]也描述了一种适应当前环境的新的同驻方案，然后评估了VPC的影响，并提出了一种量化评估同驻攻击的解决方案。</p>
 <h2 id="放置策略"><a href="#放置策略" class="headerlink" title="放置策略"></a>放置策略</h2><h3 id="实现在同一台机器上放置的原理"><a href="#实现在同一台机器上放置的原理" class="headerlink" title="实现在同一台机器上放置的原理"></a>实现在同一台机器上放置的原理</h3><p>公有云（如Amazon EC2，Google Compute Engine和Microsoft Azure）中，通常，用户注册帐户购买服务后可以在管理控制台指定VM配置，其中配置参数包括实例类型，磁盘映像，托管VM的数据中心或区域等，配置完成后即可启动该VM实例。在这期间，云提供商的VM启动服务会从客户端接收描述VM的配置期望的一组参数，然后为新的VM分配资源。</p>
 <p>那么在配置过程中就存在一个问题：选择哪一台物理主机运行该VM？这就是云中的虚拟机放置（placement）策略。</p>
-<p>虽然云提供商不公布放置策略算法，但用户可以控制配置参数，从而影响VM放置。 图1中给出了一些值得注意的参数列表。<br><img src="http://img.blog.csdn.net/20161223000048597?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>图1</p>
+<p>虽然云提供商不公布放置策略算法，但用户可以控制配置参数，从而影响VM放置。 下图中给出了一些值得注意的参数列表。<br><img src="http://img.blog.csdn.net/20161223000048597?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p>通过控制这些变量，攻击者就可以一定程度上影响VM在物理机器上的放置，从而实现与受害者同驻了。比如说数据中心的选取，一些小的数据中心机器因为少，机器发生同驻的概率更大一些。</p>
 <h3 id="相关评估"><a href="#相关评估" class="headerlink" title="相关评估"></a>相关评估</h3><p>为了详细探究VM放置策略的脆弱点，[2]设置了一个实验，通过评估三个公共云，Amazon EC2、Google Compute Engine和Microsoft Azure，对目前的放置策略的脆弱性进行了研究。简单的说，这个实验为图1展示的变量设置了一些值，并通过枚举这些配置，检查同驻情况。</p>
 <p>另外，他们自行定义了一种放置策略作为参考。该实验最后得出的结论是，实验显示在Amazon EC2、Google Compute Engine和Microsoft Azure中，实现同驻的成功率是参考策略的成功率的10倍，而且便宜了至少114美元。所以说，同驻的危害比我们想象中的要大得多。</p>
