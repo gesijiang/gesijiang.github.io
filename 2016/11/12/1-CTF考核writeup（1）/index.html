@@ -86,29 +86,20 @@
 
 <meta name="description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
 sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CTF writeup（1）-sql注入、文件上传和文件包含问题新思路">
 <meta property="og:url" content="http://yoursite.com/2016/11/12/1-CTF考核writeup（1）/index.html">
 <meta property="og:site_name" content="路途">
 <meta property="og:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
 sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
-<meta property="og:updated_time" content="2016-12-07T19:08:44.000Z">
+注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。">
+<meta property="og:updated_time" content="2016-12-23T05:31:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CTF writeup（1）-sql注入、文件上传和文件包含问题新思路">
 <meta name="twitter:description" content="在sql注入、文件上传和文件包含问题上，可以学到一些新思路。
 sql注入观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：
-注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。
-sqlmap中内置了base64编码脚本：
-
-sqlmap -u “http://xxx/index.php?id=">
+注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。">
 
 
 
@@ -317,8 +308,7 @@ sqlmap -u “http://xxx/index.php?id=">
       
         <p>在sql注入、文件上传和文件包含问题上，可以学到一些新思路。</p>
 <h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>观察题目链接，很明显，存在注入的是id。于是利用sqlmap验证，但sqlmap的结果却是“not injectble”：</p>
-<p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。</p>
-<p>sqlmap中内置了base64编码脚本：</p>
+<p>注意到链接中id值是‘MQ==’。明显参数是经过base64编码的，解码后值为‘1’。<br><a id="more"></a><br>sqlmap中内置了base64编码脚本：</p>
 <blockquote>
 <p>sqlmap -u “<a href="http://xxx/index.php?id=1" target="_blank" rel="external">http://xxx/index.php?id=1</a>“ - -tamper base64encode.py - -current-db</p>
 </blockquote>
@@ -379,16 +369,16 @@ sqlmap -u “http://xxx/index.php?id=">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/12/2-CTF考核writeup（2）/" rel="next" title="CTF writeup（2）-绕过、上传、xss、csrf方面的内容">
-                <i class="fa fa-chevron-left"></i> CTF writeup（2）-绕过、上传、xss、csrf方面的内容
+              <a href="/2016/08/07/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/11/25/3-这半年，在半年/" rel="prev" title="这半年，再半年">
-                这半年，再半年 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/11/12/2-CTF考核writeup（2）/" rel="prev" title="CTF writeup（2）-绕过、上传、xss、csrf方面的内容">
+                CTF writeup（2）-绕过、上传、xss、csrf方面的内容 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

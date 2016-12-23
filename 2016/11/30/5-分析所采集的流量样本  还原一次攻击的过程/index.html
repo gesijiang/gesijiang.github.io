@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20161130233944688">
 <meta property="og:image" content="http://img.blog.csdn.net/20161130234030646">
 <meta property="og:image" content="http://img.blog.csdn.net/20161130234109099">
-<meta property="og:updated_time" content="2016-11-30T16:06:03.000Z">
+<meta property="og:updated_time" content="2016-12-23T05:33:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用wireshark分析攻击流量样本">
 <meta name="twitter:description" content="此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。
@@ -320,8 +320,7 @@
       
         <p>此次分析样本是.pcap格式，共348帧。主要利用的分析工具是wireshark以及它的命令行版本tshark。</p>
 <h2 id="前期分析"><a href="#前期分析" class="headerlink" title="前期分析"></a>前期分析</h2><p>首先通过观察，发现只涉及到两个ip，在本文中称98.114.205.102为主机A，192.150.11.111为主机B。<br>如下图，A主动向B请求TCP连接，并完成了三次握手。<br><img src="http://img.blog.csdn.net/20161130230717869" alt="三次握手"><br>虽然不能断定，但很有可能A为攻击者，B为受害者，A攻击的是B的主机系统。</p>
-<p>理论上说这种类型的攻击一定利用了已知系统漏洞或者0day，所以接下来的目标是找到A究竟利用了什么漏洞对B实施了攻击。</p>
-<p>于是观察有没有能够暴露更多信息的数据帧。如下图，可以看到在第33帧有一个函数被调用。这非常可疑。网上搜一下这个API，很快发现它曾经曝出过问题，编号CVE-2003-0533，winodws上大名鼎鼎的“冲击波”利用的就是这个漏洞，微软给的编号是MS04-011。<br><img src="http://img.blog.csdn.net/20161130231830132" alt="函数调用"></p>
+<p>理论上说这种类型的攻击一定利用了已知系统漏洞或者0day，所以接下来的目标是找到A究竟利用了什么漏洞对B实施了攻击。<br><a id="more"></a><br>于是观察有没有能够暴露更多信息的数据帧。如下图，可以看到在第33帧有一个函数被调用。这非常可疑。网上搜一下这个API，很快发现它曾经曝出过问题，编号CVE-2003-0533，winodws上大名鼎鼎的“冲击波”利用的就是这个漏洞，微软给的编号是MS04-011。<br><img src="http://img.blog.csdn.net/20161130231830132" alt="函数调用"></p>
 <p>该漏洞是一个远程缓冲区溢出，DCE/RPC请求可以从远程主机发送到本地机的LSASS.EXE进程（Microsoft Windows LSA是本地安全授权服务(LSASRV.DLL)）。LSASS DCE/RPC末端导出的Microsoft活动目录服务存在一个缓冲区溢出，远程攻击者可以利用这个漏洞以SYSTEM权限在系统上执行任意指令。攻击LSASS的漏洞的基本办法，就是构造长参数DomainName，通过DsRoleUpgradeDownlevelServer()这个API，最终造成溢出和返回shell。</p>
 <h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><p>已知B被利用的是哪个漏洞，再分析整个流程就简单了。</p>
 <p>整个攻击过程中包含5个TCP会话，按会话顺序描述流量样本的攻击流程。<br>（1）首先，A扫描B 445/tcp端口，确认该端口是否开放。（tcp.stream eq 0）<br><img src="http://img.blog.csdn.net/20161130233612156" alt="这里写图片描述"></p>
