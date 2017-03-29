@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="机器学习,决策树," />
+  <meta name="keywords" content="隔离,逆向," />
 
 
 
@@ -84,16 +84,18 @@
 
 
 
-<meta name="description" content="这次大作业给的数据大概有300多万，要求首先分析这些密码的特征，再利用马尔可夫或机器学习的方法评价实现密码强度的评价。">
+<meta name="description" content="这篇">
 <meta property="og:type" content="article">
-<meta property="og:title" content="machine learing/决策树实现密码强度评价的历程/教训">
-<meta property="og:url" content="http://yoursite.com/2016/11/30/6non-机器学习-决策树实现密码强度分析(python)/index.html">
+<meta property="og:title" content="搭建恶意代码分析隔离环境">
+<meta property="og:url" content="http://yoursite.com/2016/12/22/搭建恶意代码分析隔离环境/index.html">
 <meta property="og:site_name" content="路途">
-<meta property="og:description" content="这次大作业给的数据大概有300多万，要求首先分析这些密码的特征，再利用马尔可夫或机器学习的方法评价实现密码强度的评价。">
-<meta property="og:updated_time" content="2017-03-23T16:48:49.000Z">
+<meta property="og:description" content="这篇">
+<meta property="og:image" content="http://yoursite.com/photos/1.png">
+<meta property="og:updated_time" content="2017-03-29T05:58:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="machine learing/决策树实现密码强度评价的历程/教训">
-<meta name="twitter:description" content="这次大作业给的数据大概有300多万，要求首先分析这些密码的特征，再利用马尔可夫或机器学习的方法评价实现密码强度的评价。">
+<meta name="twitter:title" content="搭建恶意代码分析隔离环境">
+<meta name="twitter:description" content="这篇">
+<meta name="twitter:image" content="http://yoursite.com/photos/1.png">
 
 
 
@@ -111,7 +113,7 @@
   };
 </script>
 
-  <title> machine learing/决策树实现密码强度评价的历程/教训 | 路途 </title>
+  <title> 搭建恶意代码分析隔离环境 | 路途 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -241,7 +243,7 @@
             
             
               
-                machine learing/决策树实现密码强度评价的历程/教训
+                搭建恶意代码分析隔离环境
               
             
           </h1>
@@ -253,8 +255,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-30T23:43:56+08:00" content="2016-11-30">
-              2016-11-30
+            <time itemprop="dateCreated" datetime="2016-12-22T02:43:56+08:00" content="2016-12-22">
+              2016-12-22
             </time>
           </span>
 
@@ -267,8 +269,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习做安全/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习做安全</span>
+                  <a href="/categories/恶意样本分析/" itemprop="url" rel="index">
+                    <span itemprop="name">恶意样本分析</span>
                   </a>
                 </span>
 
@@ -300,18 +302,8 @@
       
 
       
-        <p>这次大作业给的数据大概有300多万，要求首先分析这些密码的特征，再利用马尔可夫或机器学习的方法评价实现密码强度的评价。</p>
-<a id="more"></a>
-<h2 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h2><p>决策树是用来分类的算法，它表示对象属性和对象值之间的一种映射，树中的每一个节点表示对象属性的判断条件，分支表示符合节点条件的对象。树的叶子节点表示对象所属的预测结果。</p>
-<p>实际上强度评价就是通过分值来分类。构建好决策树后，输入密码，即可给出强度的预测结果。这是我们最开始还没有详细考虑时的想法。</p>
-<h2 id="scikit-learn"><a href="#scikit-learn" class="headerlink" title="scikit-learn"></a>scikit-learn</h2><p>这是python的一个机器学习库。<br><a href="http://scikit-learn.org/stable/modules/tree.html#tree" target="_blank" rel="external">Decision tree用法</a></p>
-<h2 id="实现时期"><a href="#实现时期" class="headerlink" title="实现时期"></a>实现时期</h2><h3 id="特征定义"><a href="#特征定义" class="headerlink" title="特征定义"></a>特征定义</h3><p>实际上在利用scikit-learn的情况下，需要做的只是定义规则features。<br>首先是常规的features，比如长度、大小写、数字等，混合各种情况设置权值。<br>另外因为在此之前对密码库数据已经进行分析，找出了最常见的密码结构，非常多见的单词、拼音、键位组合，所以将这些结果也作为特征。</p>
-<h3 id="训练集问题"><a href="#训练集问题" class="headerlink" title="训练集问题"></a>训练集问题</h3><p>特征定义好了，这时候的我还没反应过来，拿300万密码从features过了一遍，给每个密码都标记了一个权值，打算再拿这份数据去训练决策树…这个奇怪的逻辑也导致原本应该很清晰的代码绕了起来，而我迟迟没有好好整理代码，没发现问题…</p>
-<p>同学指出了这样用决策树的方法不对。我们找到了github上一个已经标好权值的复杂密码库尝试作为训练集。但它不仅来源未知，也不知道标记的可靠程度，且用它训练出的决策树正确率太低，显然行不通。</p>
-<p>手动去标一部分权值是不可能的，但如果用程序跑，那又给绕回去了。出题说用决策树的老师不知什么想法…</p>
-<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>最终，因为找到的库大约5000多条记录，所以我们从标记权值的300万记录中挑了5000条出来。前者统一调低权值，后者统一调高，然后混合作为训练集。虽然正确率还是高的，但过程上确实没什么道理。</p>
-<p>动手之前动脑子，引以为戒…</p>
-<p><a href="https://github.com/gesijiang/passwdstrength" target="_blank" rel="external">地址</a></p>
+        <p>这篇<br><a id="more"></a></p>
+<p><img src="/photos/1.png" alt=""></p>
 
       
     </div>
@@ -333,9 +325,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
+            <a href="/tags/隔离/" rel="tag">#隔离</a>
           
-            <a href="/tags/决策树/" rel="tag">#决策树</a>
+            <a href="/tags/逆向/" rel="tag">#逆向</a>
           
         </div>
       
@@ -344,16 +336,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/30/5-分析所采集的流量样本  还原一次攻击的过程/" rel="next" title="利用wireshark分析攻击流量样本">
-                <i class="fa fa-chevron-left"></i> 利用wireshark分析攻击流量样本
+              <a href="/2016/12/19/8-云安全（1）-概况 以及同驻攻击、侧信道相关/" rel="next" title="云安全 -概况 以及同驻攻击、侧信道介绍">
+                <i class="fa fa-chevron-left"></i> 云安全 -概况 以及同驻攻击、侧信道介绍
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/12/08/7-浏览器安全（1）-原理 时序 render dom树构建/" rel="prev" title="浏览器 - 时序 Render DOM树构建">
-                浏览器 - 时序 Render DOM树构建 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/12/22/9-暂定结构 命令行  exits/" rel="prev" title="cutetools -大体结构 shell exits">
+                cutetools -大体结构 shell exits <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -468,7 +460,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开头"><span class="nav-number">1.</span> <span class="nav-text">开头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scikit-learn"><span class="nav-number">2.</span> <span class="nav-text">scikit-learn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现时期"><span class="nav-number">3.</span> <span class="nav-text">实现时期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征定义"><span class="nav-number">3.1.</span> <span class="nav-text">特征定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练集问题"><span class="nav-number">3.2.</span> <span class="nav-text">训练集问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结尾"><span class="nav-number">4.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>
