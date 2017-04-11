@@ -90,12 +90,13 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/02/10搭建恶意代码分析隔离环境/index.html">
 <meta property="og:site_name" content="路途">
 <meta property="og:description" content="为了防止恶意代码造成破坏，在虚拟机上分析恶意代码分析是很有必要的。然而大多数恶意程序具有网络功能，那么如何在隔离的环境条件下对样本进行完整的分析呢。">
-<meta property="og:image" content="http://yoursite.com/photos/1.png">
-<meta property="og:updated_time" content="2017-04-11T13:06:51.000Z">
+<meta property="og:image" content="http://yoursite.com/photos/10/20.png">
+<meta property="og:image" content="http://yoursite.com/photos/10/20.png">
+<meta property="og:updated_time" content="2017-04-11T13:12:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建恶意代码分析环境">
 <meta name="twitter:description" content="为了防止恶意代码造成破坏，在虚拟机上分析恶意代码分析是很有必要的。然而大多数恶意程序具有网络功能，那么如何在隔离的环境条件下对样本进行完整的分析呢。">
-<meta name="twitter:image" content="http://yoursite.com/photos/1.png">
+<meta name="twitter:image" content="http://yoursite.com/photos/10/20.png">
 
 
 
@@ -303,8 +304,8 @@
 
       
         <p>为了防止恶意代码造成破坏，在虚拟机上分析恶意代码分析是很有必要的。然而大多数恶意程序具有网络功能，那么如何在隔离的环境条件下对样本进行完整的分析呢。<br><a id="more"></a></p>
-<p>首先，参照下图1，配置一个与主机隔离的虚拟局域网。其中虚拟机A用来运行恶意代码，虚拟机B则提供一些必要的网络服务。这样使得恶意代码可以连接到网络，但不会影响其他主机。</p>
-<p>图1<br>启动这两台虚拟机，A为windows xp系统，而B为基于debian系统的kali。</p>
+<p>首先，参照下图1，配置一个与主机隔离的虚拟局域网。其中虚拟机A用来运行恶意代码，虚拟机B则提供一些必要的网络服务。这样使得恶意代码可以连接到网络，但不会影响其他主机。<br><img src="/photos/10/20.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
+<p><img src="/photos/10/20.png" alt=""><br>图1<br>启动这两台虚拟机，A为windows xp系统，而B为基于debian系统的kali。</p>
 <p>图2<br>由于要与外网隔离，所以分别将A、B的网络配置均设为host-only仅主机模式，并自动获取ip。</p>
 <p>图3<br>此时A的网络情况如下图，IP地址为192.168.15.132：</p>
 <p>图4<br>此时B的网络情况如下图，IP地址为192.168.15.133：</p>
@@ -320,7 +321,6 @@
 <p>图14<br>同时，inetsim退出时，会提示报告被写入如下图所示的文件中。</p>
 <p>图15<br>进入上图所示目录，查看这个报告文件。也可以看到之前的日志记录。</p>
 <p>图16</p>
-<p><img src="/photos/1.png" alt=""></p>
 
       
     </div>
