@@ -86,14 +86,14 @@
 
 <meta name="description" content="基本静态分析使用IDA打开dll文件，查看导出函数，发现只有一个名为installer的函数：
 查看导入函数,发现包括对注册表的打开、设置等操作，对文件的创建、拷贝等操作，对进程和线程的挂起、搜索等操作：
-然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮件">
+然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮">
 <meta property="og:type" content="article">
 <meta property="og:title" content="恶意DLL分析 11-2解析">
 <meta property="og:url" content="http://yoursite.com/2017/03/29/11-《恶意代码分析实战》习题11-2解析/index.html">
 <meta property="og:site_name" content="路途">
 <meta property="og:description" content="基本静态分析使用IDA打开dll文件，查看导出函数，发现只有一个名为installer的函数：
 查看导入函数,发现包括对注册表的打开、设置等操作，对文件的创建、拷贝等操作，对进程和线程的挂起、搜索等操作：
-然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮件">
+然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮">
 <meta property="og:image" content="http://yoursite.com/photos/11/1.png">
 <meta property="og:image" content="http://yoursite.com/photos/11/2.png">
 <meta property="og:image" content="http://yoursite.com/photos/11/3.png">
@@ -138,12 +138,12 @@
 <meta property="og:image" content="http://yoursite.com/photos/11/2-3.png">
 <meta property="og:image" content="http://yoursite.com/photos/11/2-6.png">
 <meta property="og:image" content="http://yoursite.com/photos/11/2-5.png">
-<meta property="og:updated_time" content="2017-06-29T06:50:37.000Z">
+<meta property="og:updated_time" content="2017-06-29T07:15:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="恶意DLL分析 11-2解析">
 <meta name="twitter:description" content="基本静态分析使用IDA打开dll文件，查看导出函数，发现只有一个名为installer的函数：
 查看导入函数,发现包括对注册表的打开、设置等操作，对文件的创建、拷贝等操作，对进程和线程的挂起、搜索等操作：
-然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮件">
+然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮">
 <meta name="twitter:image" content="http://yoursite.com/photos/11/1.png">
 
 
@@ -351,7 +351,8 @@
       
 
       
-        <h2 id="基本静态分析"><a href="#基本静态分析" class="headerlink" title="基本静态分析"></a>基本静态分析</h2><p>使用IDA打开dll文件，查看导出函数，发现只有一个名为installer的函数：<br><img src="/photos/11/1.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
+        <a id="more"></a>
+<h2 id="基本静态分析"><a href="#基本静态分析" class="headerlink" title="基本静态分析"></a>基本静态分析</h2><p>使用IDA打开dll文件，查看导出函数，发现只有一个名为installer的函数：<br><img src="/photos/11/1.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
 <p>查看导入函数,发现包括对注册表的打开、设置等操作，对文件的创建、拷贝等操作，对进程和线程的挂起、搜索等操作：<br><img src="/photos/11/2.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
 <p>然后选择打开子窗口，查看dll文件中包含的字符串。发现除了包含所加载的dll库的名称，导出函数名称，还可以看到THEBAT.EXE、OUTLOOK.EXE、MSIMN.EXE三个可执行文件是邮件客户端，结合RCPT字符串和OpenThread可以认为恶意代码操作了邮件。另外send字符串结合wsock32.dll可以认为有网络功能。而图中的注册表项，结合AppInit_DLLs，说明这个dll可能强制所有进程加载它。<br><img src="/photos/11/3.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
 <p>另外，ini字符串处表明该程序使用了同一文件夹下的这个文件中的内容，如下图：<br><img src="/photos/11/4.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
