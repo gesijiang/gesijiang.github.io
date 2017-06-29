@@ -1,0 +1,623 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="二进制," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从JIT-ROP到defense XnR">
+<meta property="og:url" content="http://yoursite.com/2017/06/29/12-从ROP到JIT-ROP到defense XnR/index.html">
+<meta property="og:site_name" content="路途">
+<meta property="og:description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR">
+<meta property="og:image" content="http://yoursite.com/photos/12/1.png">
+<meta property="og:image" content="http://yoursite.com/photos/12/2.png">
+<meta property="og:image" content="http://yoursite.com/photos/12/3.png">
+<meta property="og:updated_time" content="2017-06-29T07:12:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从JIT-ROP到defense XnR">
+<meta name="twitter:description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR">
+<meta name="twitter:image" content="http://yoursite.com/photos/12/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 从JIT-ROP到defense XnR | 路途 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">路途</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            所有文章
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从JIT-ROP到defense XnR
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-06-29T02:43:56+08:00" content="2017-06-29">
+              2017-06-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/论文总结-翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">论文总结/翻译</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h2 id="演进：关于JIT-ROP"><a href="#演进：关于JIT-ROP" class="headerlink" title="演进：关于JIT-ROP"></a>演进：关于JIT-ROP</h2><p>我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。<br>更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。<br>于是学术界前几年开始研究细粒度的ASLR，即使基址被泄露，攻击者也得不到准确的地址。</p>
+<p>2013年<strong>JIT-ROP</strong>的提出非常有意义，它提出了在运行时寻找gadget同时构造ROP链的概念。详细的过程是这样的：在存在一个内存泄露漏洞的情况下，得到一个运行时代码指针，它泄露当前4k内存页，因为当前页可能会有分支指向其他页，所以通过这个指针可以得到尽可能多的页。将当前页运行时反汇编后，获得所需要的gadget并构造ROP链。</p>
+<p>也就是说，JIT-ROP是通过即时扫描有效内存，即时反汇编搜寻rop gadgets，即时拼接shellcode，从而绕过dep/aslr的，它在程序运行过程中动态执行，所依赖的资源在进程地址空间中获取。所以它和传统rop最大的不同在于：它可以使用任何代码指针初始化攻击环境，而传统的rop需要泄露函数的具体地址。</p>
+<p>这种攻击手段可以绕过学术界过去提出的任意粒度的ASLR。</p>
+<h2 id="演进：关于XnR"><a href="#演进：关于XnR" class="headerlink" title="演进：关于XnR"></a>演进：关于XnR</h2><p>为了针对JIT-ROP，14年ccs有一篇文章提出了XnR，利用软件模拟的方式实现了页的不可读。<br>既然页不可读，那么JIT-ROP所提出的运行时读内存页然后搜寻可用gadget这一思想就行不通了。<br>那么如何对抗不可读，提出使JIT-ROP攻击不需要“可读”这一条件，也可达成呢？这就是下面要讨论的内容了。</p>
+<h2 id="相关：关于JIT"><a href="#相关：关于JIT" class="headerlink" title="相关：关于JIT"></a>相关：关于JIT</h2><p>2008年，浏览器的JavaScript引擎引入JIT技术。JIT是一种即时编译技术，是一种解决浏览器效率低下的方案。</p>
+<p>例如Javascript，它是典型的解释型语言。程序员写了一个for循环，解释器是不知道这是一个循环的，所以它将会一句一句的去循环执行这个循环。这也是为什么解释型语言的效率特别低，因为它不会预先编译。</p>
+<p>JIT引擎的出现就是为了改善这一情况。它通过在运行时将部分语句编译为机器码，于是下次执行不需要再翻译，从而省去了解释开销，使得浏览器性能大幅度改善。</p>
+<h3 id="JIT与攻击"><a href="#JIT与攻击" class="headerlink" title="JIT与攻击"></a>JIT与攻击</h3><p>早期利用JIT新特性进行攻击的方案是在2010年blackhat大会上提出的<strong>Pointer Inference and JIT Spraying</strong>，将 ActionScript代码中进行大量的XOR操作。然后编译成字节码，并且多次更新到Flash VM中，这样它会建立很多带有恶意Xor操作的内存块。</p>
+<p>但一方面这样的方法比较旧，另一方面，学术界中早已提出防御方法JITDefender。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="攻击模型"><a href="#攻击模型" class="headerlink" title="攻击模型"></a>攻击模型</h3><p>（1）存在内存泄露漏洞<br>（2）不考虑CFI<br>（3）JavaScript环境</p>
+<p>之所以如此，因为这篇文章的中心思想是，攻击者可以通过自己注入gadget实现绕过其他限制手段如XnR。关注点并非实现真实过程的控制流转移。</p>
+<h3 id="防御环境"><a href="#防御环境" class="headerlink" title="防御环境"></a>防御环境</h3><p>（1）DEP：NX，可写不可执行<br>（2）ASLR: fine-grained，XnR应用于可执行文件，库，JIT编译而成的代码<br>（3）Non-Readable Code: 所有代码段不可读<br>（4）Hidden Code Pointers: 除了JIT-compiled的指针均已匿名<br>（5）JIT Hardening: JIT上的防御手段，比如randomized JIT pages, constant blinding,guard pages </p>
+<h2 id="攻击方法"><a href="#攻击方法" class="headerlink" title="攻击方法"></a>攻击方法</h2><h3 id="方法一：利用条件跳转语句"><a href="#方法一：利用条件跳转语句" class="headerlink" title="方法一：利用条件跳转语句"></a>方法一：利用条件跳转语句</h3><p>原理：构造if/else,for/while，编译成包含可预知的条件跳转指令。<br>举例说明一下，如果我们需要的gadget是int 0x80;ret ，翻译成机器码也就是0xcd80c3。<br>那么，则往if中写入0xc380cd字节大小的JS代码。<br><img src="/photos/12/1.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
+<p>如上右图，攻击者可以确定，编译结果中肯定包含‘je 0xc380cd’这一句。（x86/x64 架构采用小端存储）<br>所以说，通过变化if中js代码的大小，我们可以修改代码长度，改变跳转的距离。<br>而每句JS代码编译后的大小是已知固定的。所以攻击者可以精确的控制所生成的代码长度。即，je后面的值，可以随意控制。</p>
+<p>举个更具体的例子，在Chrome 33 (32-bit)/Chrome 51(64-bit)上，如果需要gadget：0xcd80c3。<br>S1: v=v1+v2, compiling to 0x10 bytes（64位 v=v）<br>S2: v=0x01010101, compiling to 0xd bytes.<br>使用S1 0c380c次(得到结果0xc380c0)，<br>再使用S2 一次，求和即得到0xc380cd。</p>
+<p>以上步骤可以注入自己想要的gadget，接下来就是要找到gadget所在的位置。<br>（1）首先通过内存泄露漏洞，得到JIT所编译的JavaScript代码的函数地址<br>（2）将这个函数的作为参数传给另一个函数，这样它就被push到stack中了（javascript的特性）。<br>（3）得到栈的信息，得到函数对象的指针，它包含了指向实际地址的指针。</p>
+<h3 id="方法二：利用直接调用语句"><a href="#方法二：利用直接调用语句" class="headerlink" title="方法二：利用直接调用语句"></a>方法二：利用直接调用语句</h3><p>上一种方法对IE基本是无效的。IE部署了JIT-hardening策略，会随机插入NOP，改变条件跳转语句的值。这样，编译后的语句就不可控了。<br>于是作者又提出使用直接调用指令实现攻击。如：call 0x1234560</p>
+<p>原理：任何两个直接调用指令即时调用同一个函数，机器码是不一样的。其实和条件跳转的原理差不多。之前控制的是je指令后边的值，那它控制的是什么呢。其实利用的是call后面的这个值是一个相对地址，第一次调用产生的机器码是被调用者和下一次所调用的差。如下图。<br><img src="/photos/12/2.png" class="[class names]" title="[200] [200] [title text [alt text]]"><br><img src="/photos/12/3.png" class="[class names]" title="[200] [200] [title text [alt text]]"></p>
+<p>假设FUN函数在2000的位置。那么在图中，连续CALL FUN_1，所以这个常数代表FUN1和第二条CALL FUN1（即0x5）的距离。即<strong>0x2000-0x5=0x1ffb</strong>。（0x5是一条call指令的大小）。这个例子里，攻击者得到的是0xe8fb1f0000。</p>
+<p>以上是大概思路。具体攻击流程有三步：<br>（1）找到call指令后那个被调用函数的地址。<br>再列一遍这个式子，<strong>0x2000-0x5=0x1ffb</strong>。在这里0x2000就是被调用函数的地址。<br>总之，一般来说，在javascript环境下，可以利用当然是地址已知的helper函数或built-in函数(比如Math.random,String.substring)。<br>另外不得不说到IE，它的built-in函数在library中，而且采用了细粒度的ASLR。但是它们所产生的JS对象，未启用随机化，而且包含指向这个函数的指针。所以对于IE也是可行的。</p>
+<p>（2）把call指令放到指定位置。<br>再列一遍这个式子，<strong>0x2000-0x5=0x1ffb</strong>。<br>还是假设我们需要的gadget是int 0x80;ret (即0xcd80c3)。<br>0xcd80c3，包含三个字节。也就是说，上面那个减法式子的结果必须保证位数满足要求，要是你的距离才两位是怎么也构造不出三位的gadget的。于是为保证三字节距离，需要创建一个由直接调用语句组成的JS函数，使它在编译后覆盖0x100 00 00字节。即我们要求第一次和最后一次CALL之间的距离，至少为0x1 00 00 00字节指令。 </p>
+<p>（3）检查机制<br>还是要说到IE，它在编译时会随机插入NOP，所以基本上不能知道函数会被编译到哪个地址。而且，前提条件存在XnR,我们是不可以通过读取代码段来确定那个位置是否是所需要的gadget的。<br>那么，只能通过取得足够大小的代码空间，全部填满call指令，从而确保计算结果在距离范围内。<br>Javascript中的check address函数会读栈中数据，直到找到call指令放置的ret，可知是否放置正确。如果没有，重新编译，重复之前的步骤。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>这攻击主要针对的是x86 (32- or 64-bit)架构。在RISC架构中，如ARM,MIPS，由于硬件层次的原因，利用上文所述的方法不能成功攻击。除非在ARM架构下，攻击者强制切换为16-bit THUMB模式。</p>
+<p>另外，虽然这篇文章中作者是以浏览器为例，但其实采用jit引擎的东西应该都适用？比如pdf阅读器。</p>
+<p>这篇文章的主要贡献就是提出了这种攻击者自己构造gadget的方法。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际上本文的核心思想很简单：<br>（1）攻击者通过构造JS代码产生一个jit-compile gadget<br>（2）由于所产生的gadget是攻击者控制的，所以不需要搜索，不需要读页，即可被攻击者用来构造ROP链<br>（3）以上过程发生在运行时</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] What Cannot Be Read, Cannot Be Leveraged? Revisiting Assumptions of JIT-ROP Defenses. USENIX 2016</p>
+<p>[2] Just-In-Time Code Reuse: On the Effectiveness of Fine-Grained Address Space Lay- out Randomization. IEEE S&amp;P 2013 </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/二进制/" rel="tag">#二进制</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/13-扫雷游戏的分析和破解/" rel="next" title="扫雷游戏的分析和破解">
+                <i class="fa fa-chevron-left"></i> 扫雷游戏的分析和破解
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/x.png"
+               alt="cuteme" />
+          <p class="site-author-name" itemprop="name">cuteme</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#演进：关于JIT-ROP"><span class="nav-number">1.</span> <span class="nav-text">演进：关于JIT-ROP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#演进：关于XnR"><span class="nav-number">2.</span> <span class="nav-text">演进：关于XnR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关：关于JIT"><span class="nav-number">3.</span> <span class="nav-text">相关：关于JIT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JIT与攻击"><span class="nav-number">3.1.</span> <span class="nav-text">JIT与攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">4.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#攻击模型"><span class="nav-number">4.1.</span> <span class="nav-text">攻击模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防御环境"><span class="nav-number">4.2.</span> <span class="nav-text">防御环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#攻击方法"><span class="nav-number">5.</span> <span class="nav-text">攻击方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一：利用条件跳转语句"><span class="nav-number">5.1.</span> <span class="nav-text">方法一：利用条件跳转语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二：利用直接调用语句"><span class="nav-number">5.2.</span> <span class="nav-text">方法二：利用直接调用语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cuteme</span>
+</div>
+
+<div class="powered-by">
+  a404
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
