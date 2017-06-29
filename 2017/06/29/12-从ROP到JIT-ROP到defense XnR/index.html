@@ -84,19 +84,19 @@
 
 
 
-<meta name="description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR，">
+<meta name="description" content="本文的重点是两种攻击者自己构造gadget的方法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从JIT-ROP到defense XnR">
 <meta property="og:url" content="http://yoursite.com/2017/06/29/12-从ROP到JIT-ROP到defense XnR/index.html">
 <meta property="og:site_name" content="路途">
-<meta property="og:description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR，">
+<meta property="og:description" content="本文的重点是两种攻击者自己构造gadget的方法。">
 <meta property="og:image" content="http://yoursite.com/photos/12/1.png">
 <meta property="og:image" content="http://yoursite.com/photos/12/2.png">
 <meta property="og:image" content="http://yoursite.com/photos/12/3.png">
-<meta property="og:updated_time" content="2017-06-29T07:15:17.000Z">
+<meta property="og:updated_time" content="2017-06-29T07:18:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从JIT-ROP到defense XnR">
-<meta name="twitter:description" content="演进：关于JIT-ROP我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。于是学术界前几年开始研究细粒度的ASLR，">
+<meta name="twitter:description" content="本文的重点是两种攻击者自己构造gadget的方法。">
 <meta name="twitter:image" content="http://yoursite.com/photos/12/1.png">
 
 
@@ -304,7 +304,8 @@
       
 
       
-        <h2 id="演进：关于JIT-ROP"><a href="#演进：关于JIT-ROP" class="headerlink" title="演进：关于JIT-ROP"></a>演进：关于JIT-ROP</h2><p>我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。<br>更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。<br>于是学术界前几年开始研究细粒度的ASLR，即使基址被泄露，攻击者也得不到准确的地址。<br><a id="more"></a></p>
+        <p>本文的重点是两种攻击者自己构造gadget的方法。<br><a id="more"></a></p>
+<h2 id="演进：关于JIT-ROP"><a href="#演进：关于JIT-ROP" class="headerlink" title="演进：关于JIT-ROP"></a>演进：关于JIT-ROP</h2><p>我们知道，最初DEP的出现是为了对抗的栈溢出、堆溢出等这类劫持程序执行流的攻击手法。在这之后，攻击者为了绕过DEP，开始利用libc.so中的函数获取shell，也就是我们所说的Ret2libc攻击。<br>更有效的防御手段还有ASLR地址随机化，使得libc.so加载的基址每次都会发生变化。当然，如果存在地址泄露等，ASLR仍可以被绕过。<br>于是学术界前几年开始研究细粒度的ASLR，即使基址被泄露，攻击者也得不到准确的地址.</p>
 <p>2013年<strong>JIT-ROP</strong>的提出非常有意义，它提出了在运行时寻找gadget同时构造ROP链的概念。详细的过程是这样的：在存在一个内存泄露漏洞的情况下，得到一个运行时代码指针，它泄露当前4k内存页，因为当前页可能会有分支指向其他页，所以通过这个指针可以得到尽可能多的页。将当前页运行时反汇编后，获得所需要的gadget并构造ROP链。</p>
 <p>也就是说，JIT-ROP是通过即时扫描有效内存，即时反汇编搜寻rop gadgets，即时拼接shellcode，从而绕过dep/aslr的，它在程序运行过程中动态执行，所依赖的资源在进程地址空间中获取。所以它和传统rop最大的不同在于：它可以使用任何代码指针初始化攻击环境，而传统的rop需要泄露函数的具体地址。</p>
 <p>这种攻击手段可以绕过学术界过去提出的任意粒度的ASLR。</p>
@@ -329,7 +330,6 @@
 <p>（3）检查机制<br>还是要说到IE，它在编译时会随机插入NOP，所以基本上不能知道函数会被编译到哪个地址。而且，前提条件存在XnR,我们是不可以通过读取代码段来确定那个位置是否是所需要的gadget的。<br>那么，只能通过取得足够大小的代码空间，全部填满call指令，从而确保计算结果在距离范围内。<br>Javascript中的check address函数会读栈中数据，直到找到call指令放置的ret，可知是否放置正确。如果没有，重新编译，重复之前的步骤。</p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>这攻击主要针对的是x86 (32- or 64-bit)架构。在RISC架构中，如ARM,MIPS，由于硬件层次的原因，利用上文所述的方法不能成功攻击。除非在ARM架构下，攻击者强制切换为16-bit THUMB模式。</p>
 <p>另外，虽然这篇文章中作者是以浏览器为例，但其实采用jit引擎的东西应该都适用？比如pdf阅读器。</p>
-<p>这篇文章的主要贡献就是提出了这种攻击者自己构造gadget的方法。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际上本文的核心思想很简单：<br>（1）攻击者通过构造JS代码产生一个jit-compile gadget<br>（2）由于所产生的gadget是攻击者控制的，所以不需要搜索，不需要读页，即可被攻击者用来构造ROP链<br>（3）以上过程发生在运行时</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] What Cannot Be Read, Cannot Be Leveraged? Revisiting Assumptions of JIT-ROP Defenses. USENIX 2016</p>
 <p>[2] Just-In-Time Code Reuse: On the Effectiveness of Fine-Grained Address Space Lay- out Randomization. IEEE S&amp;P 2013 </p>
