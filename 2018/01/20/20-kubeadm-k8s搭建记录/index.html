@@ -84,19 +84,19 @@
 
 
 
-<meta name="description" content="环境操作系统：Centos7 minimal（7.4）
-以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。">
+<meta name="description" content="环境操作系统：Centos7 minimal（7.4）虚拟机
+以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。另外如果你不能翻墙，不要照搬官网文档上写的步骤，参考我这篇记录，应该可以部署成功。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernete+calico(canal)环境搭建流程和问题记录（kubeadm）">
 <meta property="og:url" content="http://yoursite.com/2018/01/20/20-kubeadm-k8s搭建记录/index.html">
 <meta property="og:site_name" content="路途">
-<meta property="og:description" content="环境操作系统：Centos7 minimal（7.4）
-以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。">
-<meta property="og:updated_time" content="2018-07-17T07:07:34.000Z">
+<meta property="og:description" content="环境操作系统：Centos7 minimal（7.4）虚拟机
+以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。另外如果你不能翻墙，不要照搬官网文档上写的步骤，参考我这篇记录，应该可以部署成功。">
+<meta property="og:updated_time" content="2018-07-17T07:19:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernete+calico(canal)环境搭建流程和问题记录（kubeadm）">
-<meta name="twitter:description" content="环境操作系统：Centos7 minimal（7.4）
-以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。">
+<meta name="twitter:description" content="环境操作系统：Centos7 minimal（7.4）虚拟机
+以下方法只包含一个master，无法实现高可用，不适用于生产环境。注意，calico支持的最低k8s最低版本为1.7。另外如果你不能翻墙，不要照搬官网文档上写的步骤，参考我这篇记录，应该可以部署成功。">
 
 
 
@@ -262,6 +262,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/容器/" itemprop="url" rel="index">
+                    <span itemprop="name">容器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -284,12 +303,11 @@
       
 
       
-        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>操作系统：Centos7 minimal（7.4）</p>
-<p>以下方法只包含一个master，无法实现高可用，不适用于生产环境。<br>注意，calico支持的最低k8s最低版本为1.7。<br><a id="more"></a></p>
+        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>操作系统：Centos7 minimal（7.4）虚拟机</p>
+<p>以下方法只包含一个master，无法实现高可用，不适用于生产环境。<br>注意，calico支持的最低k8s最低版本为1.7。另外如果你不能翻墙，不要照搬官网文档上写的步骤，参考我这篇记录，应该可以部署成功。</p>
+<a id="more"></a>
 <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>1、安装系统centos mini后，直接使用命令ip link查看网络信息是没有ip等信息的，需要进入/etc/sysconfig/network-script目录，目录下有一个和网卡名称相同的文件，打开该文件，修改onboot=no为yes，然后重启。这时候已经可以联网了，不过如果习惯使用ifconfig，也可以yum再安装net-tools。</p>
-<p>2、光标：yum install gpm（可选）</p>
-<p>3、VM-tool：vmware菜单可选安装vm tools，从虚拟机的/dev/cdrom拷出，解压安装即可。不过需要事先安装kernel-headers kernel-devel gcc。（可选）</p>
-<p>4、本文集群在虚拟机上搭建，网络选择使用桥接模式，从而固定IP：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">cd /etc/sysconfig/network-scripts</div><div class="line">cat &gt; ifcfg-ens33 &lt;&lt; EOF</div><div class="line">TYPE=Ethernet</div><div class="line">PROXY_METHOD=none</div><div class="line">BROWSER_ONLY=no</div><div class="line">BOOTPROTO=static</div><div class="line">IPV6INIT=no</div><div class="line">NAME=ens33</div><div class="line">UUID=2ce20e3e-7c9f-47b0-bd02-b1181c59d6e7</div><div class="line">DEVICE=ens33</div><div class="line">ONBOOT=yes</div><div class="line">IPADDR=192.168.16.230</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.16.1</div><div class="line">DNS1=8.8.8.8</div><div class="line">EOF</div><div class="line"></div><div class="line">cd /etc/sysconfig</div><div class="line">cat &gt; network &lt;&lt; EOF</div><div class="line">NETWORKING=yes</div><div class="line">HOSTNAME=gsj.master.com</div><div class="line">GATEWAY=192.168.16.1 </div><div class="line">EOF</div></pre></td></tr></table></figure></p>
+<p>2、本文集群在虚拟机上搭建，网络选择使用桥接模式，从而固定IP：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">cd /etc/sysconfig/network-scripts</div><div class="line">cat &gt; ifcfg-ens33 &lt;&lt; EOF</div><div class="line">TYPE=Ethernet</div><div class="line">PROXY_METHOD=none</div><div class="line">BROWSER_ONLY=no</div><div class="line">BOOTPROTO=static</div><div class="line">IPV6INIT=no</div><div class="line">NAME=ens33</div><div class="line">UUID=2ce20e3e-7c9f-47b0-bd02-b1181c59d6e7</div><div class="line">DEVICE=ens33</div><div class="line">ONBOOT=yes</div><div class="line">IPADDR=192.168.16.230</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.16.1</div><div class="line">DNS1=8.8.8.8</div><div class="line">EOF</div><div class="line"></div><div class="line">cd /etc/sysconfig</div><div class="line">cat &gt; network &lt;&lt; EOF</div><div class="line">NETWORKING=yes</div><div class="line">HOSTNAME=gsj.master.com</div><div class="line">GATEWAY=192.168.16.1 </div><div class="line">EOF</div></pre></td></tr></table></figure></p>
 <p>然后重启网络服务：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service network restart</div></pre></td></tr></table></figure></p>
 <p>5、修改所有节点hosts文件。完毕后ping测试一下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vi /etc/hosts</div><div class="line">127.0.0.1 localhost</div><div class="line">192.168.16.230 gsj.master.com</div><div class="line">192.168.16.231 gsj.nodeone.com</div><div class="line">192.168.16.232 gsj.nodetwo.com</div></pre></td></tr></table></figure></p>
 <p>注：修改主机名时应该关注的几个文件/etc/hostname、/etc/hosts、/etc/sysconfig/network。done</p>
@@ -298,11 +316,11 @@
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>1、如果不能翻墙，那么<strong>不要照搬官网文档上写的步骤</strong>，翻译官方文档的那些博客也不用看了。官网上写的是利用kubeadm安装kubernete，但它使用的源需要翻墙才能用。</p>
 <p>2、即使你找到了适用的源替换掉了官网上那个，并成功安装了kubeadm、kubelet等，如果不能翻墙，此时也一定<strong>不要直接就去运行kubeadm init命令</strong>，因为初始化的过程中需要拉一些镜像到本地，而kubeadm默认的镜像源也是需要翻墙的。</p>
 <p>3、另外有些文章提出另一种方法，说让上github下载kubernete发行版，然后本地自行编译。虽然我不知道为什么，但这个编译过程也是需要翻墙的。</p>
-<h2 id="Master节点"><a href="#Master节点" class="headerlink" title="Master节点"></a>Master节点</h2><p>###安装启动docker<br>Docker下载1.12，目前yum自动下载的就是这个版本。</p>
+<h2 id="Master节点"><a href="#Master节点" class="headerlink" title="Master节点"></a>Master节点</h2><h3 id="安装启动docker"><a href="#安装启动docker" class="headerlink" title="安装启动docker"></a>安装启动docker</h3><p>Docker下载1.12，目前yum自动下载的就是这个版本。</p>
 <blockquote>
 <p>yum install docker<br>然后：<br>systemctl enable docker<br>systemctl start docker<br>可以docker version看一下版本。</p>
 </blockquote>
-<p>###安装启动k8s<br>第一种是使用阿里云的源，版本是1.7。如果pull时卡住了，重启一下docker即可，会从断掉的地方继续开始下载的。<br>第二种是买一台海外vps，按下面这个链接的步骤。<br><a href="https://yangl.me/2017/04/23/kubernetes-1.6.1-deploy/" target="_blank" rel="external">1.6版本</a></p>
+<h3 id="安装启动k8s"><a href="#安装启动k8s" class="headerlink" title="安装启动k8s"></a>安装启动k8s</h3><p>第一种是使用阿里云的源，版本是1.7。如果pull时卡住了，重启一下docker即可，会从断掉的地方继续开始下载的。<br>第二种是买一台海外vps，按下面这个链接的步骤。<br><a href="https://yangl.me/2017/04/23/kubernetes-1.6.1-deploy/" target="_blank" rel="external">1.6版本</a></p>
 <p>第一步安装kubernetes，首先添加yum源。进入/etc/yum.repos.d目录，新建repo如kubernetes.repo：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">cd /etc/yum.repos.d</div><div class="line">cat &gt; kubernetes.repo &lt;&lt; EOF</div><div class="line">[kubernetes.repo]</div><div class="line">name=Kubernetes</div><div class="line">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</div><div class="line">enabled=1</div><div class="line">gpgcheck=0</div><div class="line">EOF</div></pre></td></tr></table></figure></p>
 <p>安装 (同时会安装依赖socat和kubernetes-cni)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y kubernetes-cni-0.5.1-0.x86_64 kubelet-1.7.2 kubectl-1.7.2 kubeadm-1.7.2</div></pre></td></tr></table></figure></p>
 <p>加入开机启动并启动kubelet：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl enable kubelet &amp;&amp; systemctl start kubelet</div></pre></td></tr></table></figure></p>
@@ -365,10 +383,7 @@
 <p>排查错误时可以用的命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">kubectl logs kube-dns-2425271678-mrpn5 --namespace kube-system -c dnsmasq</div><div class="line">kubectl logs kube-dns-2425271678-mrpn5 --namespace kube-system -c kubedns</div><div class="line">kubectl logs kube-dns-2425271678-mrpn5 --namespace kube-system -c sidecar</div></pre></td></tr></table></figure></p>
 <p>发现是kubedns的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Failed to list *v1.Service: Get https://10.96.0.1:443/api/v1/services?resourceVersion=0: dial tcp 10.96.0.1:443: getsockopt: no route to host</div></pre></td></tr></table></figure></p>
 <p>解决方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">systemctl stop kubelet  </div><div class="line">systemctl stop docker  </div><div class="line">iptables --flush  </div><div class="line">iptables -tnat --flush  </div><div class="line">systemctl start kubelet  </div><div class="line">systemctl start docker</div></pre></td></tr></table></figure></p>
-<p>##Node节点</p>
-<p>###安装启动docker</p>
-<p>###安装启动k8s</p>
-<p>第一步安装kubernetes，与master节点相同。<br>第二步从阿里云公共仓库下载必须的镜像。创建.sh脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">cat &gt; download-mirror.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">    pause-amd64:3.0</div><div class="line">    kube-proxy-amd64:v1.7.2</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName gcr.io/google_containers/$imageName</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">done</div><div class="line">EOF</div><div class="line"></div><div class="line">cat &gt; download-canal.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">        node:v2.6.2</div><div class="line">        cni:v1.11.0</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName quay.io/calico/$imageName</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName</div><div class="line">done</div><div class="line">EOF</div><div class="line"></div><div class="line">cat &gt; download-fl.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">		flannel:v0.9.1-amd64</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName quay.io/coreos/flannel:v0.9.1</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">done</div><div class="line">EOF</div></pre></td></tr></table></figure></p>
+<h2 id="Node节点"><a href="#Node节点" class="headerlink" title="Node节点"></a>Node节点</h2><h3 id="安装启动docker-1"><a href="#安装启动docker-1" class="headerlink" title="安装启动docker"></a>安装启动docker</h3><h3 id="安装启动k8s-1"><a href="#安装启动k8s-1" class="headerlink" title="安装启动k8s"></a>安装启动k8s</h3><p>第一步安装kubernetes，与master节点相同。<br>第二步从阿里云公共仓库下载必须的镜像。创建.sh脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">cat &gt; download-mirror.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">    pause-amd64:3.0</div><div class="line">    kube-proxy-amd64:v1.7.2</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName gcr.io/google_containers/$imageName</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">done</div><div class="line">EOF</div><div class="line"></div><div class="line">cat &gt; download-canal.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">        node:v2.6.2</div><div class="line">        cni:v1.11.0</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName quay.io/calico/$imageName</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/calico_containers/$imageName</div><div class="line">done</div><div class="line">EOF</div><div class="line"></div><div class="line">cat &gt; download-fl.sh &lt;&lt; EOF</div><div class="line">images=(</div><div class="line">		flannel:v0.9.1-amd64</div><div class="line">)</div><div class="line">for imageName in $&#123;images[@]&#125; ; do</div><div class="line">    docker pull registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">    docker tag registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName quay.io/coreos/flannel:v0.9.1</div><div class="line">    docker rmi registry.cn-hangzhou.aliyuncs.com/szss_k8s/$imageName</div><div class="line">done</div><div class="line">EOF</div></pre></td></tr></table></figure></p>
 <p>分别执行以上三个脚本下载镜像。<br>将节点加入集群：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kubeadm join --token af64e4.bc99178fe363872a 192.168.16.230:6443 --skip-preflight-checks</div></pre></td></tr></table></figure></p>
 <p>此时再master上已经可以看到新加入的节点信息了。</p>
 <p>问题1：如果在节点上使用kubectl命令，可能出现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">The connection to the server localhost:8080 was refused - did you specify the right host or port?</div></pre></td></tr></table></figure></p>
@@ -493,7 +508,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -531,7 +546,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master节点"><span class="nav-number">4.</span> <span class="nav-text">Master节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Calico网络组件"><span class="nav-number">4.1.</span> <span class="nav-text">Calico网络组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Canal网络组件"><span class="nav-number">4.2.</span> <span class="nav-text">Canal网络组件</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master节点"><span class="nav-number">4.</span> <span class="nav-text">Master节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装启动docker"><span class="nav-number">4.1.</span> <span class="nav-text">安装启动docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装启动k8s"><span class="nav-number">4.2.</span> <span class="nav-text">安装启动k8s</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Calico网络组件"><span class="nav-number">4.3.</span> <span class="nav-text">Calico网络组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Canal网络组件"><span class="nav-number">4.4.</span> <span class="nav-text">Canal网络组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node节点"><span class="nav-number">5.</span> <span class="nav-text">Node节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装启动docker-1"><span class="nav-number">5.1.</span> <span class="nav-text">安装启动docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装启动k8s-1"><span class="nav-number">5.2.</span> <span class="nav-text">安装启动k8s</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
