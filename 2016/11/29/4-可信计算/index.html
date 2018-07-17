@@ -1,0 +1,613 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="信息安全,可信计算," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="可信计算在中国发展是否有用？
+
+这样一个topic很难鲜明的给出“反对”或“赞同”的态度。作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，它的发展当然是应该肯定的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于可信计算“发展”">
+<meta property="og:url" content="http://yoursite.com/2016/11/29/4-可信计算/index.html">
+<meta property="og:site_name" content="路途">
+<meta property="og:description" content="可信计算在中国发展是否有用？
+
+这样一个topic很难鲜明的给出“反对”或“赞同”的态度。作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，它的发展当然是应该肯定的。">
+<meta property="og:updated_time" content="2018-07-17T06:46:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于可信计算“发展”">
+<meta name="twitter:description" content="可信计算在中国发展是否有用？
+
+这样一个topic很难鲜明的给出“反对”或“赞同”的态度。作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，它的发展当然是应该肯定的。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 关于可信计算“发展” | 路途 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">路途</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            所有文章
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于可信计算“发展”
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-29T22:43:56+08:00" content="2016-11-29">
+              2016-11-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">杂谈</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>可信计算在中国发展是否有用？</p>
+<hr>
+<p>这样一个topic很难鲜明的给出“反对”或“赞同”的态度。作为一个没有深入研究过可信计算的信息安全专业学生，我不认为可信计算无用，它的发展当然是应该肯定的。<br><a id="more"></a></p>
+<p>目前可信计算正在被广泛的传播和科普，包括我自己在大学的时候，听过两次沈院士的演讲。但不知道其他人有没有和我同样的感受，可信计算附带的、某些非技术层面的理念会让不了解信息安全的人们形成错误的观念，导致一些负面的后果。</p>
+<p>从可信计算最有力的推动者沈昌祥院士的报告里可以了解到，他认为可信计算达到的效果是“攻击者进不去，非授权者重要信息拿不到，窃取保密信息看不懂，系统和信息篡改不了，系统工作瘫不成，攻击行为赖不掉。我想听到这里，大部分人是不是会理解为，有可信计算，可高枕无忧。</p>
+<p>我第一次听沈院士讲座是在省里组织的一场全国比赛的颁奖典礼上，在场的除了我们少数参赛者，其他大部分人来自各个政府部门。那时候我是从没听说过可信计算的小白，听完我的感觉就是，虽然不太懂但是好厉害的样子。我想，当时在座的领导听后，得出的结论或许会是信息安全问题没那么严重，这些东西听不懂，跟我们普通人无关，等他们研究出来了我们就安全了。</p>
+<p>“有了可信计算，网络空间就彻底安全，所以安全是阳春白雪与我们无关的研究”。这其实是非常危险的观念。<strong>现实中几千年都没有解决的偷盗问题，放到网络空间中，我们为什么就认为它就会消弭呢？</strong></p>
+<p>从攻击者的角度，程序员在开发过程中难免出错，只要有功能，有输入输出，攻击者就有机可乘。安卓已经实现了trustzone，但是很多攻击手段并不是它所能覆盖的防护面。普通人认为最糟心的吸费蠕虫，反而在专业人员看来是技术含量最低的，随便一个android开发者都能做。</p>
+<p>从可信计算的角度，可信计算基于信任。从初始的信任根到最后的可信应用，每个环节都通过信任链的前一环节验证来确保真实可信，数据是通过信任根-BIOS-引导程序-系统内核-应用层程序这条信任链保证其安全性。如果我的理解没错的话，逆向工作、正版软件的破解工作大概不再有用武之地。</p>
+<p>所以说，可信计算是很有必要，但是对于普通人普通企业又不是那么重要。所以，它不需要如此大范围的“发展”。我想之所以出现cyber space一词，就是因为发现网络空间不是那么单一简单的事物，它和我们的生活没有两样。有了保险柜，不代表东西都会放进去，有了防盗门，不代表可以不关窗。</p>
+<p>毕竟安全是<strong>权衡</strong>利弊下的选择，且始终会以<strong>攻防</strong>的形式存在。</p>
+<p>乔布斯说未来每个人都应学习写代码。而作为安全相关的研究从业者，我们向非专业人员传播的观念应当是进入信息时代，每个人都应提高安全意识，了解计算机相关知识，维护网络空间的安全秩序。如果想要高级安全服务呢？那需要花钱买。<strong>而绝不是告诉大家，安全我来做，你不用管。</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/信息安全/" rel="tag">#信息安全</a>
+          
+            <a href="/tags/可信计算/" rel="tag">#可信计算</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/25/3-半年/" rel="next" title="这半年，再半年">
+                <i class="fa fa-chevron-left"></i> 这半年，再半年
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/30/5-分析所采集的流量样本  还原一次攻击的过程/" rel="prev" title="利用wireshark分析攻击流量样本">
+                利用wireshark分析攻击流量样本 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/x.png"
+               alt="cuteme" />
+          <p class="site-author-name" itemprop="name">cuteme</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cuteme</span>
+</div>
+
+<div class="powered-by">
+  a404
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
