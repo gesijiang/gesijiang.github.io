@@ -84,12 +84,12 @@
 
 
 
-<meta name="description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑…这周先补完，再开个论文总结系列吧。">
+<meta name="description" content="浏览器安全是可以归类到web安全中的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浏览器 - 时序 Render DOM树构建">
 <meta property="og:url" content="http://yoursite.com/2016/12/08/7-浏览器安全（1）-原理 时序 render dom树构建/index.html">
 <meta property="og:site_name" content="路途">
-<meta property="og:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑…这周先补完，再开个论文总结系列吧。">
+<meta property="og:description" content="浏览器安全是可以归类到web安全中的。">
 <meta property="og:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161208163104871?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221151428604?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -100,10 +100,10 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20161209005324049?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221150841904?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20161221150914201?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2017-03-23T15:36:08.000Z">
+<meta property="og:updated_time" content="2018-07-17T08:17:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浏览器 - 时序 Render DOM树构建">
-<meta name="twitter:description" content="上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑…这周先补完，再开个论文总结系列吧。">
+<meta name="twitter:description" content="浏览器安全是可以归类到web安全中的。">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20161208140704975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSV9hbV9nb2luZw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
 
@@ -311,9 +311,9 @@
       
 
       
-        <p>上一篇机器学习的博客一直没给补完，然而我现在还是想再挖个坑…<br>这周先补完，再开个论文总结系列吧。<br><a id="more"></a><br><strong>浏览器安全是可以归类到web安全中的。</strong></p>
-<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕…</p>
-<p>我以前对Web安全的了解也停留在通过注入啊、上传啊这些手段“拿站”。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
+        <p><strong>浏览器安全是可以归类到web安全中的。</strong><br><a id="more"></a></p>
+<p>想想安全行业里最多的就是搞Web安全的人，需求略大、门槛略低，以及这算是离“黑客”二字最近的技术了。说起来有些群里那些初高中的少年还真让我很是羡慕.</p>
+<p>我以前对Web安全的了解也停留在通过注入、上传这些手段“拿站”。实际上它是有一个架构和体系的，总的来说，Web安全可以从<strong>客户端安全</strong>和<strong>服务器端安全</strong>两方面讨论。</p>
 <p><strong>浏览器安全属于Web安全中的客户端安全部分</strong>，当然，还有XSS、CSRF、点击劫持等都能算到客户端安全这一类中。而服务端安全包含了SQL注入、文件上传、配置安全、拒绝服务等问题。</p>
 <p>分类来自《白帽子讲Web安全》，看看书的目录就能明白，不上图了。</p>
 <p>关于浏览器原理的文章：<a href="http://taligarsiel.com/Projects/howbrowserswork1.htm" target="_blank" rel="external">《How browsers work》</a>经典</p>
